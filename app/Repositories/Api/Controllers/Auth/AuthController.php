@@ -2,15 +2,10 @@
 
 namespace App\Repositories\Api\Controllers\Auth;
 
-use App\Models\User;
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use App\Notifications\PasswordReset;
 use App\Repositories\Api\BaseController;
 use App\Http\Resources\UserProfileResource;
 use App\Repositories\Api\Services\AuthService;
-use Illuminate\Validation\ValidationException;
 use App\Repositories\Api\Validators\AuthValidator;
 
 class AuthController extends BaseController
