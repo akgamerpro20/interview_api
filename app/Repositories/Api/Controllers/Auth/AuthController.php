@@ -92,4 +92,24 @@ class AuthController extends BaseController
 
         return $this->responseSuccess(null, null, 'User Profile Updated');
     }
+
+    public function userChangePassword(Request $request)
+    {
+        $validator = $this->validator->userChangePassword($request->all());
+
+        if($validator->fails()){
+            $errors = $this->getErrorObject($validator->errors());
+            return $this->responseError($validator->errors()->first(), $errors, 422);
+        }
+
+        $attributes = $validator->validated();
+
+        $is_have_error = $this->service->userChangePassword($attributes, auth()->user());
+
+        if($is_have_error){
+            return $this->responseError($is_have_error, null, 422);
+        }
+
+        return $this->responseSuccess(null, null, 'Change Password Successfully.');
+    }
 }

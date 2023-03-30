@@ -33,4 +33,13 @@ class AuthValidator
             'email' => 'required|email|unique:users,email,'. auth()->user()->id,
         ]);
     }
+
+    public function userChangePassword(array $params)
+    {        
+        return Validator::make($params, [
+            'old_password' => 'required',
+            'new_password' => 'required',
+            'confirm_password' => 'required',
+        ]);
+    }
 }

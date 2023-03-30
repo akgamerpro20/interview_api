@@ -5,6 +5,7 @@ namespace App\Repositories\Api\Services;
 use App\Models\User;
 use App\Http\Resources\ShopResource;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use App\Http\Resources\CategoryResource;
 
 class AuthService
@@ -67,5 +68,27 @@ class AuthService
     {
         deleteImage(auth()->user()->image);
         auth()->user()->delete();
+    }
+
+    public function userChangePassword(array $params, object $user)
+    {
+        $error = null;
+
+        if (!Hash::check($params['old_password'], auth()->user()->password)) {
+            $error = "Your old password is wrong.";
+            return $error;
+        }
+
+        if ($params['new_password'] != $params['confirm_password'])
+        {
+            $error = "Your new password is not the same.";
+            return $error;
+        }
+
+        $user->update([
+            'password' => bcrypt($params['new_password'])
+        ]);
+
+        return $error;
     }
 }

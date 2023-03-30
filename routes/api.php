@@ -21,8 +21,9 @@ Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function(){
-    Route::get('logout', [AuthController::class, 'logout']);
-    Route::get('user-profile', [AuthController::class, 'userProfile']);
-    Route::post('user-profile/update', [AuthController::class, 'userProfileUpdate']);
+    Route::get('user/profile', [AuthController::class, 'userProfile']);
+    Route::post('user/profile-update', [AuthController::class, 'userProfileUpdate']);
     Route::delete('user/delete', [AuthController::class, 'userDelete']);
+    Route::get('user/logout', [AuthController::class, 'logout']);
+    Route::post('user/change-password', [AuthController::class, 'userChangePassword']);
 });
