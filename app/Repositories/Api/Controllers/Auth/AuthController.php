@@ -69,7 +69,13 @@ class AuthController extends BaseController
 
     public function userDelete()
     {
-        $this->service->userDelete();
+        $query = $this->service->userDelete();
+
+        if(!$query)
+        {
+            return $this->responseError("Deleting Failed!", null, 422);
+        }
+
         return $this->responseSuccess(null, 'User Acc Deleted');
     }
 
@@ -85,6 +91,11 @@ class AuthController extends BaseController
         $attributes = $validator->validated();
 
         $user = $this->service->userProfileUpdate($attributes, auth()->user());
+        
+        if(!$user)
+        {
+            return $this->responseError("Updating Failed!", null, 422);
+        }
 
         return $this->responseSuccess(null, 'User Profile Updated');
     }

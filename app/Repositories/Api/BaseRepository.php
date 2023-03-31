@@ -24,20 +24,12 @@ class BaseRepository implements BaseRepositoryInterface
     {
         $query = $this->connection()->find($id);
 
-        if(!$query){
-            throw new QueryException("Id Not Found!");
-        }
-
         return $query;
     }
 
     public function create(array $params)
     {
         $query = $this->connection()->create($params);
-
-        if(!$query){
-            throw new QueryException("Creating Failed!");
-        }
 
         return $query;
     }
@@ -46,20 +38,12 @@ class BaseRepository implements BaseRepositoryInterface
     {
         $query = $this->connection()->where('id', $id)->update($params);
 
-        if(!$query){
-            throw new QueryException("Updating Failed!");
-        }
-
         return $query;
     }
 
     public function delete($id)
     {
         $query = $this->connection()->destroy($id);
-        
-        if (!$query) {
-            throw new QueryException("Deleting Failed!");
-        }
 
         return $query;
     }

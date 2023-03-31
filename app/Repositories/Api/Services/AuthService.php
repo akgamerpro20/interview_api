@@ -44,7 +44,7 @@ class AuthService
         }
 
         $params['password'] = bcrypt($params['password']);
-        $user = User::create($params);
+        $user = $this->repository->createUser($params);
         $user['token'] = $user->createToken($user)->plainTextToken;
 
         return $user;
@@ -60,7 +60,7 @@ class AuthService
             $params['image'] = $user->image;
         }
 
-        return $user->update([
+        return $this->repository->updateUser($user->id,[
             'name' => $params['name'],
             'email' => $params['email'],
             'image' => $params['image']
@@ -69,13 +69,12 @@ class AuthService
 
     public function logout()
     {
-        auth()->user()->currentAccessToken()->delete();
+        return auth()->user()->currentAccessToken()->delete();
     }
 
     public function userDelete()
     {
-        deleteImage(auth()->user()->image);
-        auth()->user()->delete();
+        return $this->repository->deleteUser();
     }
 
     public function userChangePassword(array $params, object $user)

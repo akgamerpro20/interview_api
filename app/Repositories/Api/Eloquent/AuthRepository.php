@@ -18,4 +18,25 @@ class AuthRepository extends BaseRepository implements AuthRepositoryInterface
         $users = $this->connection()->paginate(2);
         return $users;
     }
+
+    public function createUser(array $params)
+    {
+        return $this->create($params);
+    }
+
+    public function updateUser($id,array $params)
+    {
+        return $this->update($id, $params);
+    }
+
+    public function deleteUser()
+    {
+        $id = auth()->user()->id;
+
+        if($id){
+            deleteImage(auth()->user()->image);
+        }
+        
+        return $this->delete($id);
+    }
 }
