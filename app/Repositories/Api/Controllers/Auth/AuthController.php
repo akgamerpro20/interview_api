@@ -31,7 +31,7 @@ class AuthController extends BaseController
         $attributes = $validator->validated();
         $user = $this->service->register($attributes);
 
-        return $this->responseSuccess(null, $user, 'Register successfully.');
+        return $this->responseSuccess($user, 'Register successfully.');
     }
 
     public function login(Request $request)
@@ -51,25 +51,25 @@ class AuthController extends BaseController
             return $this->responseError("Invalid_credentials", null, 422);
         }
 
-        return $this->responseSuccess(null, $user, 'Login successfully');
+        return $this->responseSuccess($user, 'Login successfully');
     }
 
     public function userProfile()
     {
         $user = new UserProfileResource(auth()->user());
-        return $this->responseSuccess(null, $user, "User Profile");
+        return $this->responseSuccess($user, "User Profile");
     }
 
     public function logout()
     {
         $this->service->logout();
-        return $this->responseSuccess(null, null, 'Logout successfully');
+        return $this->responseSuccess(null, 'Logout successfully');
     }
 
     public function userDelete()
     {
         $this->service->userDelete();
-        return $this->responseSuccess(null, null, 'User Acc Deleted');
+        return $this->responseSuccess(null, 'User Acc Deleted');
     }
 
     public function userProfileUpdate(Request $request)
@@ -85,7 +85,7 @@ class AuthController extends BaseController
 
         $user = $this->service->userProfileUpdate($attributes, auth()->user());
 
-        return $this->responseSuccess(null, null, 'User Profile Updated');
+        return $this->responseSuccess(null, 'User Profile Updated');
     }
 
     public function userChangePassword(Request $request)
@@ -105,6 +105,6 @@ class AuthController extends BaseController
             return $this->responseError($is_have_error, null, 422);
         }
 
-        return $this->responseSuccess(null, null, 'Change Password Successfully.');
+        return $this->responseSuccess(null, 'Change Password Successfully.');
     }
 }
