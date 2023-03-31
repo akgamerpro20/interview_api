@@ -6,9 +6,13 @@ interface AuthRepositoryInterface
 {
     public function allUser();
 
-    public function createUser(array $params);
+    public function userLogin(array $params);
 
-    public function updateUser($id, array $params);
+    public function userRegister(array $params);
+
+    public function userProfileUpdate(array $params, object $user);
+
+    public function userChangePassword(array $params, object $user);
 
     public function deleteUser();
 }
