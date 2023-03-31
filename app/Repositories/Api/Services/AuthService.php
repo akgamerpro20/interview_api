@@ -92,9 +92,13 @@ class AuthService
             return $error;
         }
 
-        $user->update([
+        $updateUser = $this->repository->updateUser($user->id,[
             'password' => bcrypt($params['new_password'])
         ]);
+
+        if(!$updateUser){
+            $error = "Failed Password Changed.";
+        }
 
         return $error;
     }
