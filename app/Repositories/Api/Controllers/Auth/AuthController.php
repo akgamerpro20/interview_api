@@ -3,6 +3,7 @@
 namespace App\Repositories\Api\Controllers\Auth;
 
 use Illuminate\Http\Request;
+use App\Http\Resources\ShopResource;
 use App\Repositories\Api\BaseController;
 use App\Http\Resources\UserProfileResource;
 use App\Repositories\Api\Services\AuthService;
@@ -106,5 +107,11 @@ class AuthController extends BaseController
         }
 
         return $this->responseSuccess(null, 'Change Password Successfully.');
+    }
+
+    public function users()
+    {
+        $users = $this->service->users();
+        return $this->responseSuccess($users, "Users List");
     }
 }

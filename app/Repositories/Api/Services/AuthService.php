@@ -7,9 +7,17 @@ use App\Http\Resources\ShopResource;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Resources\CategoryResource;
+use App\Repositories\Api\Eloquent\AuthRepository;
 
 class AuthService
 {
+    protected $repository;
+
+    public function __construct(AuthRepository $repository)
+    {
+        $this->repository = $repository;
+    }
+
     public function login(array $params)
     {
         if (Auth::attempt($params)) {
@@ -90,5 +98,10 @@ class AuthService
         ]);
 
         return $error;
+    }
+
+    public function users()
+    {
+        return $this->repository->allUser();
     }
 }
