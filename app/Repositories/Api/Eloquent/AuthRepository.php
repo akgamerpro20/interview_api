@@ -22,7 +22,7 @@ class AuthRepository extends BaseRepository implements AuthRepositoryInterface
         return $users;
     }
 
-    public function userLogin(array $params)
+    public function login(array $params)
     {
         if (Auth::attempt($params)) {
             $user = Auth::user();
@@ -41,7 +41,7 @@ class AuthRepository extends BaseRepository implements AuthRepositoryInterface
         return null;
     }
 
-    public function userRegister(array $params)
+    public function register(array $params)
     {
         if ($params['image']) {
             $params['image'] = uploadImageFile($params['image'], 'user-profile/');

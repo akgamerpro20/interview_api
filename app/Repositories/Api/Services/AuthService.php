@@ -20,12 +20,12 @@ class AuthService
 
     public function login(array $params)
     {
-        return $this->repository->userLogin($params);
+        return $this->repository->login($params);
     }
 
     public function register(array $params)
     {
-        return $this->repository->userRegister($params);
+        return $this->repository->register($params);
     }
 
     public function userProfileUpdate(array $params, object $user)
