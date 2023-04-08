@@ -32,3 +32,34 @@ if (!function_exists('deleteImage')) {
 		\Storage::delete($imagePath);
 	}
 }
+
+if (!function_exists('send_fcm_notification')) {
+	function send_fcm_notification($field)
+	{
+
+		$fcmApiKey = config('services.fcm.key');
+
+		$url = url('https://fcm.googleapis.com/fcm/send');
+
+		$headers = array(
+			'Authorization: key=' . $fcmApiKey,
+			'Content-Type: application/json'
+		);
+
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_POST, true);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($field));
+		$result = curl_exec($ch);
+
+		if ($result === FALSE) {
+			die('Curl failed: ' . curl_error($ch));
+		}
+		curl_close($ch);
+
+		// return json_decode($result);
+	}
+}

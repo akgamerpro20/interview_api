@@ -2,7 +2,9 @@
 
 namespace App\Jobs;
 
+use Log;
 use App\Models\User;
+use App\Models\DeviceToken;
 use Illuminate\Bus\Queueable;
 use App\Models\UserNotification;
 use Illuminate\Queue\SerializesModels;
@@ -30,50 +32,91 @@ class PushNotification implements ShouldQueue
      */
     public function handle(): void
     {
-        $users = User::get();
+        // if ($this->notification->type == 1) {
+        //     $image = $this->notification->course_id ? image_path($this->notification->course->image) : Null;
+        // } else {
+        //     $image = $this->notification->course_id ? image_path($this->notification->certificate->image) : Null;
+        // }
 
-        foreach ($users as $key => $user) {
-            $userNotification = UserNotification::create([
-                'user_id' => $user->id,
-                'notification_id' => $this->notification->id,
-            ]);
+        $msg = array
+        (
+            'id'            => $this->notification->id,
+            'title'         => $this->notification->title,
+            'body'          => $this->notification->message,
+            'image'         => null,
+            // 'course_id'     => $this->notification->course_id ?? 0,
+            'noti_type'     => $this->notification->noti_type
+        );
 
-             if (DeviceToken::where('user_id', $user->id)->exists()) {
-                $deviceToken = DeviceToken::where('user_id', $user->id)->latest()->first();
+        if($this->notification->sent_to === 1){
+            $android_fields = [
+                'to' => "/topics/ALL",
+                'priority' => 'high',
+                'data' => $msg
+            ];
 
-                $to = (array) $deviceToken->token;
+            Log::info('Push Notification For Android: '. json_encode($android_fields));
+            // send_fcm_notification($android_fields);
 
-                $msg = array
-                (
-                    'id' => $this->notification->id,
-                    'title' => $this->notification->title_en,
-                    'body'   => $this->notification->message_en
-                   
-                    // 'title_mm' => $this->notification->title_mm,
-                    // 'message_mm'   => $this->notification->message_mm,
-                    // 'type' => $this->notification->type,
-                    // 'book_id' => $this->notification->book_id,
-                );
+            $ios_fields = [
+                'to' => "/topics/ios_all",
+                'notification' => [
+                    'title' => $this->notification->title,
+                    'body'  => $this->notification->message,
+                ],
+                'data' => [
+                    'image'     => null,
+                    // 'course_id' => $this->notification->course_id ?? 0,
+                    'type'      => $this->notification->noti_type
+                ]
+            ];
 
-                $noti = array (
-                    'title' => $this->notification->title_en,
-                    'body'   => $this->notification->message_en
-                );
+            Log::info('Push Notification For IOS: '. json_encode($ios_fields));
+            // send_fcm_notification($ios_fields);
+        }else{
+            $users = User::get();
 
-                $fields = [
-                    'registration_ids' => $to,
-                    'priority' => 'high',
-                    'data' => $msg,
-                    "direct_boot_ok" => true,
-                    "notification" => $noti
-                ];
+            foreach ($users as $key => $user) {
+                $userNotification = UserNotification::create([
+                    'user_id' => $user->id,
+                    'noti_id' => $this->notification->id,
+                ]);
 
-                send_fcm_notification($fields);
+                if (DeviceToken::where('user_id', $user->id)->exists()) {
+                    $deviceToken = DeviceToken::where('user_id', $user->id)->latest()->first();
 
-                $this->notification->sent_status = 1;
-                $this->notification->save();
-                $userNotification->sent = 1;
-                $userNotification->save();
+                    $to = (array) $deviceToken->token;
+
+                    $android_fields = [
+                        'registration_ids' => $to,
+                        'priority' => 'high',
+                        'data' => $msg,
+                    ];
+
+                    Log::info('Push Notification With Device Token (Android): '. json_encode($android_fields));
+                    // send_fcm_notification($android_fields);
+
+                    $ios_fields = [
+                        'registration_ids' => $to,
+                        'notification' => [
+                            'title' => $this->notification->title,
+                            'body'  => $this->notification->message,
+                        ],
+                        'data' => [
+                            'image'     => null,
+                            // 'course_id' => $this->notification->course_id ?? 0,
+                            'type'      => $this->notification->noti_type
+                        ]
+                    ];
+
+                    Log::info('Push Notification With Device Token (IOS): '. json_encode($ios_fields));
+                    // send_fcm_notification($ios_fields);
+
+                    $this->notification->send_status = 1;
+                    $this->notification->save();
+                    $userNotification->sent = 1;
+                    $userNotification->save();
+                }
             }
         }
     }

@@ -2,7 +2,9 @@
 
 namespace App\Repositories\Api\Controllers;
 
+use App\Models\Notification;
 use Illuminate\Http\Request;
+use App\Jobs\PushNotification;
 use App\Repositories\Api\BaseController;
 use App\Repositories\Api\Validators\NotiValidator;
 
@@ -30,23 +32,12 @@ class NotificationController extends BaseController
             return $this->responseError("Sent To & Noti Type must be integer, not String.", null, 422);
         }
 
-        $msg = array
-        (
-            'title'         => $attributes['title'],
-            'message'       => $attributes['message'],
-            'image'         => $attributes['image'] ? image_path($attributes['image']) :null,
-            // 'course_id'     => $request->course_id ?? 0,
-        );
+        $notification = Notification::create($attributes);
 
-        $fields = [
-            'to' => "/topics/All",
-            'priority' => 'high',
-            'data' => $msg
-        ];
-        return response()->json($fields);
+        PushNotification::dispatch($notification);
 
         // resolve(\App\Services\PushNotificationService::class)->send($fields);	
         
-        return response()->json($attributes);
+        return response()->json($notification);
     }
 }
