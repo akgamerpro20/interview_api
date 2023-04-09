@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UserController;
+use App\Repositories\Api\Controllers\TestingController;
 use App\Repositories\Api\Controllers\Auth\AuthController;
 use App\Repositories\Api\Controllers\NotificationController;
 
@@ -31,4 +32,6 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::get('users', [AuthController::class, 'users']);
 
     Route::post('noti-create', [NotificationController::class, 'create']);
+
+    Route::get('testing', [TestingController::class, 'testing']);
 });
