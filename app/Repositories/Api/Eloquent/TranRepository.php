@@ -3,6 +3,7 @@
 namespace App\Repositories\Api\Eloquent;
 
 use App\Models\Transaction;
+use App\Jobs\CreateManyTransaction;
 use App\Repositories\Api\BaseRepository;
 use App\Repositories\Api\Interfaces\TranRepositoryInterface;
 
@@ -21,13 +22,14 @@ class TranRepository extends BaseRepository implements TranRepositoryInterface
 
     public function createTransactionWithJob(array $params)
     {
-        for ($x = 0; $x < $params["tran_count"]; $x++) {
-            $transaction = $this->create([
-                "user_id" => $params["user_id"],
-                "amount" => $params["amount"],
-                "pay_date" => $params["pay_date"],
-            ]);
-        }
+        $transaction = $this->create([
+            "user_id" => $params["user_id"],
+            "amount" => $params["amount"],
+            "pay_date" => $params["pay_date"],
+        ]);
+
+        dispatch(new CreateManyTransaction($transaction, $params));
+
         return $transaction;
     }
 
