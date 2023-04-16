@@ -39,6 +39,22 @@ class TransactionController extends BaseController
         return $this->responseSuccess($transaction, 'Transaction Successfully!');
     }
 
+    public function createWithJob(Request $request)
+    {
+        $validator = $this->validator->createWithJob($request->all());
+
+        if ($validator->fails()) {
+            $errors = $this->getErrorObject($validator->errors());
+            return $this->responseError($validator->errors()->first(), $errors, 422);
+        }
+
+        $attributes = $validator->validated();
+
+        $transaction = $this->service->createTranWithJob($attributes);
+
+        return $this->responseSuccess($transaction, 'Transaction Successfully!');
+    }
+
     public function approve($tranId)
     {
         $data = $this->service->approve($tranId);

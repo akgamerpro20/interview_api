@@ -39,6 +39,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('transactions')->group(function () {
         Route::get('/', [TransactionController::class, 'all']);
         Route::post('create-transaction', [TransactionController::class, 'create']);
+        Route::post('create-transaction-with-job', [TransactionController::class, 'createWithJob']);
         Route::get('approve-payment/{tranId}', [TransactionController::class, 'approve']);
     });
 });

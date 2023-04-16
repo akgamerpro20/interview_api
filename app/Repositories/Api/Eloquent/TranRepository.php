@@ -19,6 +19,18 @@ class TranRepository extends BaseRepository implements TranRepositoryInterface
         return $transaction;
     }
 
+    public function createTransactionWithJob(array $params)
+    {
+        for ($x = 0; $x < $params["tran_count"]; $x++) {
+            $transaction = $this->create([
+                "user_id" => $params["user_id"],
+                "amount" => $params["amount"],
+                "pay_date" => $params["pay_date"],
+            ]);
+        }
+        return $transaction;
+    }
+
     public function approveTransaction($tranId)
     {
         $data = null;

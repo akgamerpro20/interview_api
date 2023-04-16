@@ -6,5 +6,7 @@ interface TranRepositoryInterface
 {
     public function createTransaction(array $params);
 
+    public function createTransactionWithJob(array $params);
+
     public function approveTransaction($tranId);
 }

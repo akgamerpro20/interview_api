@@ -18,6 +18,11 @@ class TransService
         return $this->repository->createTransaction($params);
     }
 
+    public function createTranWithJob(array $params)
+    {
+        return $this->repository->createTransactionWithJob($params);
+    }
+
     public function approve($tranId)
     {
         return $this->repository->approveTransaction($tranId);
