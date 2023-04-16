@@ -28,7 +28,7 @@ class NotificationController extends BaseController
 
         $attributes = $validator->validated();
 
-        if(is_string($attributes['sent_to']) || is_string($attributes['noti_type'])){
+        if (is_string($attributes['sent_to']) || is_string($attributes['noti_type'])) {
             return $this->responseError("Sent To & Noti Type must be integer, not String.", null, 422);
         }
 
@@ -37,7 +37,7 @@ class NotificationController extends BaseController
         PushNotification::dispatch($notification);
 
         // resolve(\App\Services\PushNotificationService::class)->send($fields);	
-        
+
         return response()->json($notification);
     }
 }

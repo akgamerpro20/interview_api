@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Repositories\Api\Eloquent;
 
@@ -28,12 +28,12 @@ class AuthRepository extends BaseRepository implements AuthRepositoryInterface
             $user = Auth::user();
             $token = $user->createToken($user->email)->plainTextToken;
             $data = [
-                'id'       => $user->id,
-                'image'    => image_path($user->image),
-                'email'    => $user->email,
+                'id' => $user->id,
+                'image' => image_path($user->image),
+                'email' => $user->email,
                 'password' => $user->password,
-                'token'    => $token,
-                'shops'     => ShopResource::collection($user->shops),
+                'token' => $token,
+                'shops' => ShopResource::collection($user->shops),
             ];
             return $data;
         }
@@ -56,15 +56,14 @@ class AuthRepository extends BaseRepository implements AuthRepositoryInterface
 
     public function userProfileUpdate(array $params, object $user)
     {
-        if(isset($params['image']))
-        {
+        if (isset($params['image'])) {
             deleteImage($user->image);
             $params['image'] = uploadImageFile($params['image'], 'user-profile/');
-        }else{
+        } else {
             $params['image'] = $user->image;
         }
 
-        return $this->update($user->id,[
+        return $this->update($user->id, [
             'name' => $params['name'],
             'email' => $params['email'],
             'image' => $params['image']
@@ -79,30 +78,29 @@ class AuthRepository extends BaseRepository implements AuthRepositoryInterface
             return $error = "Your old password is wrong.";
         }
 
-        if ($params['new_password'] != $params['confirm_password'])
-        {
+        if ($params['new_password'] != $params['confirm_password']) {
             return $error = "Your new password is not the same.";
         }
 
-        $updateUser = $this->update($user->id,[
+        $updateUser = $this->update($user->id, [
             'password' => bcrypt($params['new_password'])
         ]);
 
-        if(!$updateUser){
+        if (!$updateUser) {
             return $error = "Failed Password Changed.";
         }
 
-        return null;
+        return $error;
     }
 
     public function deleteUser()
     {
         $id = auth()->user()->id;
 
-        if($id){
+        if ($id) {
             deleteImage(auth()->user()->image);
         }
-        
+
         return $this->delete($id);
     }
 }

@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UserController;
 use App\Repositories\Api\Controllers\TestingController;
 use App\Repositories\Api\Controllers\Auth\AuthController;
+use App\Repositories\Api\Controllers\TransactionController;
 use App\Repositories\Api\Controllers\NotificationController;
 
 /*
@@ -22,7 +23,7 @@ use App\Repositories\Api\Controllers\NotificationController;
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
 
-Route::middleware('auth:sanctum')->group(function(){
+Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('user/profile', [AuthController::class, 'userProfile']);
     Route::post('user/profile-update', [AuthController::class, 'userProfileUpdate']);
@@ -34,4 +35,10 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::post('noti-create', [NotificationController::class, 'create']);
 
     Route::get('testing', [TestingController::class, 'testing']);
+
+    Route::prefix('transactions')->group(function () {
+        Route::get('/', [TransactionController::class, 'all']);
+        Route::post('create-transaction', [TransactionController::class, 'create']);
+        Route::get('approve-payment/{tranId}', [TransactionController::class, 'approve']);
+    });
 });
