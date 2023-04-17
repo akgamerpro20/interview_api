@@ -15,6 +15,7 @@ return new class extends Migration {
             $table->bigInteger("user_id");
             $table->boolean('status')->default(0);
             $table->date('pay_date')->nullable()->formate('Y-m-d');
+            $table->dateTime('schedule_date')->nullable();
             $table->double('amount')->nullable();
             $table->timestamps();
         });

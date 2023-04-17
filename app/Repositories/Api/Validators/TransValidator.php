@@ -11,7 +11,8 @@ class TransValidator
         return Validator::make($params, [
             'user_id' => 'required|integer|exists:users,id',
             'amount' => 'required',
-            'pay_date' => 'required|date_format:Y-m-d'
+            'pay_date' => 'required|date_format:Y-m-d',
+            'schedule_date' => 'required|date_format:Y-m-d H:i:s'
         ]);
     }
 

@@ -41,5 +41,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('create-transaction', [TransactionController::class, 'create']);
         Route::post('create-transaction-with-job', [TransactionController::class, 'createWithJob']);
         Route::get('approve-payment/{tranId}', [TransactionController::class, 'approve']);
+        Route::get('encryptData', [TransactionController::class, 'EncryptData']);
+        Route::get('decryptData', [TransactionController::class, 'DecryptData']);
+        Route::get('checkMyanmar', [TransactionController::class, 'checkMyanmar']);
     });
 });
