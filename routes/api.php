@@ -1,5 +1,6 @@
 <?php
 
+use App\Repositories\Api\Controllers\PhoneController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UserController;
@@ -34,7 +35,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('noti-create', [NotificationController::class, 'create']);
 
-    Route::get('testing', [TestingController::class, 'testing']);
+    Route::prefix('testing')->group(function () {
+        Route::get('/database-backup', [TestingController::class, 'saveDataBackup']);
+    });
 
     Route::prefix('transactions')->group(function () {
         Route::get('/', [TransactionController::class, 'all']);
@@ -44,5 +47,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('encryptData', [TransactionController::class, 'EncryptData']);
         Route::get('decryptData', [TransactionController::class, 'DecryptData']);
         Route::get('checkMyanmar', [TransactionController::class, 'checkMyanmar']);
+        Route::get('groupByWithPayDate', [TransactionController::class, 'groupByWithPayDate']);
+    });
+
+    Route::prefix('phone')->group(function () {
+        Route::post('check-myanmar-phone', [PhoneController::class, 'checkPhNo']);
     });
 });

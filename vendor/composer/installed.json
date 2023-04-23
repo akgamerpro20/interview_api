@@ -3221,6 +3221,58 @@
             "install-path": "../monolog/monolog"
         },
         {
+            "name": "mrlinnth/mm-regions-cities",
+            "version": "0.1.1",
+            "version_normalized": "0.1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mrlinnth/mm-regions-cities.git",
+                "reference": "6aa64446dbeab9e2b8c7389b858b306161788c8a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mrlinnth/mm-regions-cities/zipball/6aa64446dbeab9e2b8c7389b858b306161788c8a",
+                "reference": "6aa64446dbeab9e2b8c7389b858b306161788c8a",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/database": ">=5.6.0",
+                "illuminate/support": ">=5.6.0",
+                "php": ">=7.0.0"
+            },
+            "time": "2020-04-21T05:56:45+00:00",
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Mrlinnth\\Mmrc\\MmrcServiceProvider"
+                    ]
+                }
+            },
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "Mrlinnth\\Mmrc\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Myanmar regions and cities data",
+            "keywords": [
+                "Myanmar",
+                "cities",
+                "laravel",
+                "regions"
+            ],
+            "support": {
+                "issues": "https://github.com/mrlinnth/mm-regions-cities/issues",
+                "source": "https://github.com/mrlinnth/mm-regions-cities/tree/master"
+            },
+            "install-path": "../mrlinnth/mm-regions-cities"
+        },
+        {
             "name": "myclabs/deep-copy",
             "version": "1.11.1",
             "version_normalized": "1.11.1.0",

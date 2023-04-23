@@ -2,11 +2,13 @@
 
 namespace App\Repositories\Api\Controllers;
 
+use Carbon\Carbon;
+use App\Models\User;
 use App\Models\Transaction;
+use Illuminate\Http\Request;
 use App\Repositories\Api\BaseController;
 use App\Repositories\Api\Services\TransService;
 use App\Repositories\Api\Validators\TransValidator;
-use Illuminate\Http\Request;
 
 class TransactionController extends BaseController
 {
@@ -312,6 +314,19 @@ class TransactionController extends BaseController
             }
         }
         return "false";
+    }
+    public function groupByWithPayDate()
+    {
+        $data = [];
+        $transactions = Transaction::orderBy('pay_date', 'desc')->paginate(2)->groupBy('pay_date');
+
+        if (count($transactions) > 0) {
+            foreach ($transactions as $key => $value) {
+                $data[] = ['date' => $key, 'transactions' => $value];
+            }
+        }
+
+        return $this->responseSuccess($data, 'Transaction List with Date!');
     }
 
 // protected function encrypt($data)

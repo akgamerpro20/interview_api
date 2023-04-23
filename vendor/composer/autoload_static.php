@@ -127,6 +127,7 @@ class ComposerStaticInit829de80b4c678381b46ec928251d23ba
         'M' => 
         array (
             'MyCLabs\\Enum\\' => 13,
+            'Mrlinnth\\Mmrc\\' => 14,
             'Monolog\\' => 8,
         ),
         'L' => 
@@ -440,6 +441,10 @@ class ComposerStaticInit829de80b4c678381b46ec928251d23ba
         array (
             0 => __DIR__ . '/..' . '/myclabs/php-enum/src',
         ),
+        'Mrlinnth\\Mmrc\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/mrlinnth/mm-regions-cities/src',
+        ),
         'Monolog\\' => 
         array (
             0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
@@ -625,8 +630,12 @@ class ComposerStaticInit829de80b4c678381b46ec928251d23ba
     );
 
     public static $classMap = array (
+        'App\\Attributes\\MyFirstAttribute' => __DIR__ . '/../..' . '/app/Attributes/MyFirstAttribute.php',
+        'App\\Console\\Commands\\TestCommand' => __DIR__ . '/../..' . '/app/Console/Commands/TestCommand.php',
+        'App\\Console\\Commands\\TransactionApproveSchedule' => __DIR__ . '/../..' . '/app/Console/Commands/TransactionApproveSchedule.php',
         'App\\Console\\Kernel' => __DIR__ . '/../..' . '/app/Console/Kernel.php',
         'App\\Exceptions\\Handler' => __DIR__ . '/../..' . '/app/Exceptions/Handler.php',
+        'App\\Http\\Classes\\TestClass' => __DIR__ . '/../..' . '/app/Http/Classes/TestClass.php',
         'App\\Http\\Controllers\\Auth\\AuthenticatedSessionController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/AuthenticatedSessionController.php',
         'App\\Http\\Controllers\\Auth\\ConfirmablePasswordController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/ConfirmablePasswordController.php',
         'App\\Http\\Controllers\\Auth\\EmailVerificationNotificationController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/EmailVerificationNotificationController.php',
@@ -654,13 +663,16 @@ class ComposerStaticInit829de80b4c678381b46ec928251d23ba
         'App\\Http\\Resources\\ProductResource' => __DIR__ . '/../..' . '/app/Http/Resources/ProductResource.php',
         'App\\Http\\Resources\\ShopResource' => __DIR__ . '/../..' . '/app/Http/Resources/ShopResource.php',
         'App\\Http\\Resources\\UserProfileResource' => __DIR__ . '/../..' . '/app/Http/Resources/UserProfileResource.php',
+        'App\\Jobs\\CreateManyTransaction' => __DIR__ . '/../..' . '/app/Jobs/CreateManyTransaction.php',
         'App\\Jobs\\PushNotification' => __DIR__ . '/../..' . '/app/Jobs/PushNotification.php',
         'App\\Models\\Category' => __DIR__ . '/../..' . '/app/Models/Category.php',
+        'App\\Models\\DailyTransaction' => __DIR__ . '/../..' . '/app/Models/DailyTransaction.php',
         'App\\Models\\DeviceToken' => __DIR__ . '/../..' . '/app/Models/DeviceToken.php',
         'App\\Models\\Notification' => __DIR__ . '/../..' . '/app/Models/Notification.php',
         'App\\Models\\Product' => __DIR__ . '/../..' . '/app/Models/Product.php',
         'App\\Models\\Shop' => __DIR__ . '/../..' . '/app/Models/Shop.php',
         'App\\Models\\ShopCategory' => __DIR__ . '/../..' . '/app/Models/ShopCategory.php',
+        'App\\Models\\Transaction' => __DIR__ . '/../..' . '/app/Models/Transaction.php',
         'App\\Models\\User' => __DIR__ . '/../..' . '/app/Models/User.php',
         'App\\Models\\UserNotification' => __DIR__ . '/../..' . '/app/Models/UserNotification.php',
         'App\\Notifications\\PasswordReset' => __DIR__ . '/../..' . '/app/Notifications/PasswordReset.php',
@@ -674,12 +686,18 @@ class ComposerStaticInit829de80b4c678381b46ec928251d23ba
         'App\\Repositories\\Api\\BaseRepositoryInterface' => __DIR__ . '/../..' . '/app/Repositories/Api/BaseRepositoryInterface.php',
         'App\\Repositories\\Api\\Controllers\\Auth\\AuthController' => __DIR__ . '/../..' . '/app/Repositories/Api/Controllers/Auth/AuthController.php',
         'App\\Repositories\\Api\\Controllers\\NotificationController' => __DIR__ . '/../..' . '/app/Repositories/Api/Controllers/NotificationController.php',
+        'App\\Repositories\\Api\\Controllers\\PhoneController' => __DIR__ . '/../..' . '/app/Repositories/Api/Controllers/PhoneController.php',
         'App\\Repositories\\Api\\Controllers\\TestingController' => __DIR__ . '/../..' . '/app/Repositories/Api/Controllers/TestingController.php',
+        'App\\Repositories\\Api\\Controllers\\TransactionController' => __DIR__ . '/../..' . '/app/Repositories/Api/Controllers/TransactionController.php',
         'App\\Repositories\\Api\\Eloquent\\AuthRepository' => __DIR__ . '/../..' . '/app/Repositories/Api/Eloquent/AuthRepository.php',
+        'App\\Repositories\\Api\\Eloquent\\TranRepository' => __DIR__ . '/../..' . '/app/Repositories/Api/Eloquent/TranRepository.php',
         'App\\Repositories\\Api\\Interfaces\\AuthRepositoryInterface' => __DIR__ . '/../..' . '/app/Repositories/Api/Interfaces/AuthRepositoryInterface.php',
+        'App\\Repositories\\Api\\Interfaces\\TranRepositoryInterface' => __DIR__ . '/../..' . '/app/Repositories/Api/Interfaces/TranRepositoryInterface.php',
         'App\\Repositories\\Api\\Services\\AuthService' => __DIR__ . '/../..' . '/app/Repositories/Api/Services/AuthService.php',
+        'App\\Repositories\\Api\\Services\\TransService' => __DIR__ . '/../..' . '/app/Repositories/Api/Services/TransService.php',
         'App\\Repositories\\Api\\Validators\\AuthValidator' => __DIR__ . '/../..' . '/app/Repositories/Api/Validators/AuthValidator.php',
         'App\\Repositories\\Api\\Validators\\NotiValidator' => __DIR__ . '/../..' . '/app/Repositories/Api/Validators/NotiValidator.php',
+        'App\\Repositories\\Api\\Validators\\TransValidator' => __DIR__ . '/../..' . '/app/Repositories/Api/Validators/TransValidator.php',
         'App\\View\\Components\\AppLayout' => __DIR__ . '/../..' . '/app/View/Components/AppLayout.php',
         'App\\View\\Components\\GuestLayout' => __DIR__ . '/../..' . '/app/View/Components/GuestLayout.php',
         'Attribute' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
@@ -3894,6 +3912,16 @@ class ComposerStaticInit829de80b4c678381b46ec928251d23ba
         'Monolog\\SignalHandler' => __DIR__ . '/..' . '/monolog/monolog/src/Monolog/SignalHandler.php',
         'Monolog\\Test\\TestCase' => __DIR__ . '/..' . '/monolog/monolog/src/Monolog/Test/TestCase.php',
         'Monolog\\Utils' => __DIR__ . '/..' . '/monolog/monolog/src/Monolog/Utils.php',
+        'Mrlinnth\\Mmrc\\Facades\\Mmrc' => __DIR__ . '/..' . '/mrlinnth/mm-regions-cities/src/Facades/Mmrc.php',
+        'Mrlinnth\\Mmrc\\Http\\Controllers\\Api\\MmrcController' => __DIR__ . '/..' . '/mrlinnth/mm-regions-cities/src/Http/Controllers/Api/MmrcController.php',
+        'Mrlinnth\\Mmrc\\Http\\Controllers\\MmrcController' => __DIR__ . '/..' . '/mrlinnth/mm-regions-cities/src/Http/Controllers/MmrcController.php',
+        'Mrlinnth\\Mmrc\\MmrcServiceProvider' => __DIR__ . '/..' . '/mrlinnth/mm-regions-cities/src/MmrcServiceProvider.php',
+        'Mrlinnth\\Mmrc\\Models\\City' => __DIR__ . '/..' . '/mrlinnth/mm-regions-cities/src/Models/City.php',
+        'Mrlinnth\\Mmrc\\Models\\Region' => __DIR__ . '/..' . '/mrlinnth/mm-regions-cities/src/Models/Region.php',
+        'Mrlinnth\\Mmrc\\Transformers\\CityCollection' => __DIR__ . '/..' . '/mrlinnth/mm-regions-cities/src/Transformers/CityCollection.php',
+        'Mrlinnth\\Mmrc\\Transformers\\CityResource' => __DIR__ . '/..' . '/mrlinnth/mm-regions-cities/src/Transformers/CityResource.php',
+        'Mrlinnth\\Mmrc\\Transformers\\RegionCollection' => __DIR__ . '/..' . '/mrlinnth/mm-regions-cities/src/Transformers/RegionCollection.php',
+        'Mrlinnth\\Mmrc\\Transformers\\RegionResource' => __DIR__ . '/..' . '/mrlinnth/mm-regions-cities/src/Transformers/RegionResource.php',
         'MyCLabs\\Enum\\Enum' => __DIR__ . '/..' . '/myclabs/php-enum/src/Enum.php',
         'MyCLabs\\Enum\\PHPUnit\\Comparator' => __DIR__ . '/..' . '/myclabs/php-enum/src/PHPUnit/Comparator.php',
         'Nette\\ArgumentOutOfRangeException' => __DIR__ . '/..' . '/nette/utils/src/exceptions.php',
