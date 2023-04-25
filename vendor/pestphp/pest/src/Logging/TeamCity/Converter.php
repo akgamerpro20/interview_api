@@ -64,7 +64,7 @@ final class Converter
     }
 
     /**
-     * Gets the exception messsage.
+     * Gets the exception message.
      */
     public function getExceptionMessage(Throwable $throwable): string
     {
@@ -164,6 +164,14 @@ final class Converter
         $path = $firstTest->testDox()->prettifiedClassName();
 
         return $this->toRelativePath($path);
+    }
+
+    /**
+     * Gets the test suite size.
+     */
+    public function getTestSuiteSize(TestSuite $testSuite): int
+    {
+        return $testSuite->count();
     }
 
     /**

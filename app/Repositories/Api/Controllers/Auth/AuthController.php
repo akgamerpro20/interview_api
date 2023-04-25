@@ -39,7 +39,7 @@ class AuthController extends BaseController
     {
         $validator = $this->validator->login($request->all());
 
-        if($validator->fails()){
+        if ($validator->fails()) {
             $errors = $this->getErrorObject($validator->errors());
             return $this->responseError($validator->errors()->first(), $errors, 422);
         }
@@ -48,7 +48,7 @@ class AuthController extends BaseController
 
         $user = $this->service->login($attributes);
 
-        if(!$user){
+        if (!$user) {
             return $this->responseError("Invalid_credentials", null, 422);
         }
 
@@ -71,8 +71,7 @@ class AuthController extends BaseController
     {
         $query = $this->service->userDelete();
 
-        if(!$query)
-        {
+        if (!$query) {
             return $this->responseError("Deleting Failed!", null, 422);
         }
 
@@ -83,7 +82,7 @@ class AuthController extends BaseController
     {
         $validator = $this->validator->userProfileUpdate($request->all());
 
-        if($validator->fails()){
+        if ($validator->fails()) {
             $errors = $this->getErrorObject($validator->errors());
             return $this->responseError($validator->errors()->first(), $errors, 422);
         }
@@ -91,9 +90,8 @@ class AuthController extends BaseController
         $attributes = $validator->validated();
 
         $user = $this->service->userProfileUpdate($attributes, auth()->user());
-        
-        if(!$user)
-        {
+
+        if (!$user) {
             return $this->responseError("Updating Failed!", null, 422);
         }
 
@@ -104,7 +102,7 @@ class AuthController extends BaseController
     {
         $validator = $this->validator->userChangePassword($request->all());
 
-        if($validator->fails()){
+        if ($validator->fails()) {
             $errors = $this->getErrorObject($validator->errors());
             return $this->responseError($validator->errors()->first(), $errors, 422);
         }
@@ -113,7 +111,7 @@ class AuthController extends BaseController
 
         $is_have_error = $this->service->userChangePassword($attributes, auth()->user());
 
-        if($is_have_error){
+        if ($is_have_error) {
             return $this->responseError($is_have_error, null, 422);
         }
 

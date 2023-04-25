@@ -10,22 +10,31 @@ use PHPUnit\Architecture\Enums\ObjectType;
 use PHPUnit\Architecture\Services\ServiceContainer;
 use ReflectionClass;
 
-class ObjectDescriptionBase
+abstract class ObjectDescriptionBase
 {
     public ObjectType $type;
 
     public string $path;
 
+    /**
+     * @var class-string<mixed>
+     */
     public string $name;
 
+    /**
+     * @var Node[]
+     */
     public array $stmts;
 
-    public ReflectionClass $reflectionClass;
+    public ReflectionClass $reflectionClass; // @phpstan-ignore-line
 
     public static function make(string $path): ?self
     {
         $ast = null;
         $content = file_get_contents($path);
+        if ($content === false) {
+            throw new Exception("Path: '{$path}' not found");
+        }
 
         try {
             $ast = ServiceContainer::$parser->parse($content);
@@ -41,7 +50,7 @@ class ObjectDescriptionBase
 
         $stmts = ServiceContainer::$nodeTraverser->traverse($ast);
 
-        /** @var Node\Stmt\Class_|Node\Stmt\Trait_|Node\Stmt\Interface_ $object */
+        /** @var Node\Stmt\Class_|Node\Stmt\Trait_|Node\Stmt\Interface_|Node\Stmt\Enum_|null $object */
         $object = ServiceContainer::$nodeFinder->findFirst($stmts, function (Node $node) {
             return $node instanceof Node\Stmt\Class_
                 || $node instanceof Node\Stmt\Trait_
@@ -66,17 +75,20 @@ class ObjectDescriptionBase
         $description = new static(); // @phpstan-ignore-line
 
         if ($object instanceof Node\Stmt\Class_) {
-            $description->type = ObjectType::_CLASS();
+            $description->type = ObjectType::_CLASS;
         } elseif ($object instanceof Node\Stmt\Trait_) {
-            $description->type = ObjectType::_TRAIT();
+            $description->type = ObjectType::_TRAIT;
         } elseif ($object instanceof Node\Stmt\Interface_) {
-            $description->type = ObjectType::_INTERFACE();
+            $description->type = ObjectType::_INTERFACE;
         } elseif ($object instanceof Node\Stmt\Enum_) {
-            $description->type = ObjectType::_ENUM();
+            $description->type = ObjectType::_ENUM;
         }
 
+        /** @var class-string $className */
+        $className = $object->namespacedName->toString();
+
         $description->path            = $path;
-        $description->name            = $object->namespacedName->toString();
+        $description->name            = $className;
         $description->stmts           = $stmts;
         $description->reflectionClass = new ReflectionClass($description->name);
 
