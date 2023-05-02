@@ -2,22 +2,55 @@
 
 namespace App\Repositories\Api\Controllers;
 
+use App\Models\Post;
 use Carbon\Carbon;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Repositories\Api\BaseController;
 
+abstract class Status
+{
+    const SUCCESS = 1;
+    const PENDING = 2;
+    const FAILED = 3;
+}
+
 class TestingController extends BaseController
 {
-    public function saveDataBackup()
+    public function testing()
     {
-        $filename = "backup-" . Carbon::now()->format('Y-m-d') . ".gz";
+        $myNumber = 123456.784321;
 
-        $command = "mysqldump --user=" . env('DB_USERNAME') . " --password=" . env('DB_PASSWORD') . " --host=" . env('DB_HOST') . " " . env('DB_DATABASE') . "  | gzip > " . storage_path() . "/app/backup/" . $filename;
+        return response()->json(number_format($myNumber, 2));
+    }
 
-        $returnVar = NULL;
-        $output = NULL;
+    public function userPost($id)
+    {
+        $post = Post::find($id);
+        return response()->json($post->user->email);
+    }
 
-        exec($command, $output, $returnVar);
+    public function matchTest()
+    {
+        return match (3) {
+            Status::PENDING => $this->pending(),
+            Status::SUCCESS => $this->success(),
+            Status::FAILED => $this->failed(),
+        };
+    }
+
+    protected function pending()
+    {
+        return "pending";
+    }
+
+    protected function success()
+    {
+        return "success";
+    }
+
+    protected function failed()
+    {
+        return "failed";
     }
 }

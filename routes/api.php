@@ -36,7 +36,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('noti-create', [NotificationController::class, 'create']);
 
     Route::prefix('testing')->group(function () {
-        Route::get('/database-backup', [TestingController::class, 'saveDataBackup']);
+        Route::get('/', [TestingController::class, 'testing']);
+        Route::get('/userPost/{id}', [TestingController::class, 'userPost']);
     });
 
     Route::prefix('transactions')->group(function () {
