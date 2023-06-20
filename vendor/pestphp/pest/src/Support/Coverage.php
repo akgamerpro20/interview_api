@@ -42,14 +42,6 @@ final class Coverage
             return false;
         }
 
-        if ($runtime->hasPCOV()) {
-            return true;
-        }
-
-        if ($runtime->hasPHPDBGCodeCoverage()) {
-            return true;
-        }
-
         if (! $runtime->hasXdebug()) {
             return true;
         }

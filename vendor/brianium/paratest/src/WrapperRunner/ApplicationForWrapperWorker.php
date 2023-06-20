@@ -95,7 +95,6 @@ final class ApplicationForWrapperWorker
             EventFacade::emitter()->testRunnerBootstrapFinished($bootstrapFilename);
         }
 
-        $extensionRequiresCodeCoverageCollection = false;
         if (! $this->configuration->noExtensions()) {
             if ($this->configuration->hasPharExtensionDirectory()) {
                 (new PharLoader())->loadPharExtensionsInDirectory(
@@ -103,10 +102,9 @@ final class ApplicationForWrapperWorker
                 );
             }
 
-            $extensionFacade       = new ExtensionFacade();
             $extensionBootstrapper = new ExtensionBootstrapper(
                 $this->configuration,
-                $extensionFacade,
+                new ExtensionFacade(),
             );
 
             foreach ($this->configuration->extensionBootstrappers() as $bootstrapper) {
@@ -115,15 +113,9 @@ final class ApplicationForWrapperWorker
                     $bootstrapper['parameters'],
                 );
             }
-
-            $extensionRequiresCodeCoverageCollection = $extensionFacade->requiresCodeCoverageCollection();
         }
 
-        CodeCoverage::instance()->init(
-            $this->configuration,
-            CodeCoverageFilterRegistry::instance(),
-            $extensionRequiresCodeCoverageCollection,
-        );
+        CodeCoverage::instance()->init($this->configuration, CodeCoverageFilterRegistry::instance());
 
         if ($this->configuration->hasLogfileJunit()) {
             new JunitXmlLogger(
@@ -134,13 +126,9 @@ final class ApplicationForWrapperWorker
 
         new ProgressPrinter(
             DefaultPrinter::from($this->progressFile),
-            EventFacade::instance(),
             false,
             120,
-            $this->configuration->source(),
-            $this->configuration->restrictDeprecations(),
-            $this->configuration->restrictNotices(),
-            $this->configuration->restrictWarnings(),
+            EventFacade::instance(),
         );
 
         if (isset($this->teamcityFile)) {

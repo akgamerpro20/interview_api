@@ -11,12 +11,9 @@ use Pest\Arch\Repositories\ObjectsRepository;
 use Pest\Arch\Support\Composer;
 use Pest\Arch\ValueObjects\Dependency;
 use Pest\Arch\ValueObjects\Targets;
-use Pest\Arch\ValueObjects\Violation;
-use PhpParser\Node\Name;
 use PHPUnit\Architecture\ArchitectureAsserts;
 use PHPUnit\Architecture\Elements\Layer\Layer;
 use PHPUnit\Architecture\Elements\ObjectDescription;
-use PHPUnit\Architecture\Services\ServiceContainer;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\ExpectationFailedException;
 
@@ -75,42 +72,52 @@ final class Blueprint
     /**
      * Expects the target to "only" use the given dependencies.
      *
-     * @param  callable(string, string, string, Violation|null): mixed  $failure
+     * @param  callable(string, string, string): mixed  $failure
      */
     public function expectToOnlyUse(LayerOptions $options, callable $failure): void
     {
         foreach ($this->target->value as $targetValue) {
             $allowedUses = array_merge(
                 ...array_map(fn (Layer $layer): array => array_map(
+                    // @phpstan-ignore-next-line
                     fn (ObjectDescription $object): string => $object->name, iterator_to_array($layer->getIterator())), array_map(
                         fn (string $dependency): Layer => $this->layerFactory->make($options, $dependency),
-                        [
-                            $targetValue, ...array_map(
-                                fn (Dependency $dependency): string => $dependency->value, $this->dependencies->values
-                            ),
-                        ],
+                        [$targetValue, ...array_map(
+                            fn (Dependency $dependency): string => $dependency->value, $this->dependencies->values
+                        )],
                     )
                 ));
 
-            $layer = $this->layerFactory->make($options, $targetValue);
-            foreach ($layer as $object) {
-                foreach ($object->uses as $use) {
-                    if (! in_array($use, $allowedUses, true)) {
-                        $failure($targetValue, $this->dependencies->__toString(), $use, $this->getUsagePathAndLines($layer, $targetValue, $use));
+            $notDeclaredDependencies = [];
 
-                        return;
+            foreach ($this->layerFactory->make($options, $targetValue) as $object) {
+                assert($object instanceof ObjectDescription);
+
+                foreach ($object->uses as $use) {
+                    assert(is_string($use));
+
+                    if (! in_array($use, $allowedUses, true)) {
+                        $notDeclaredDependencies[] = $use;
                     }
                 }
             }
 
-            self::assertTrue(true);
+            try {
+                if ($notDeclaredDependencies !== []) {
+                    throw new ExpectationFailedException($notDeclaredDependencies[0]);
+                }
+
+                self::assertTrue(true);
+            } catch (ExpectationFailedException $e) {
+                $failure($targetValue, $this->dependencies->__toString(), $e->getMessage());
+            }
         }
     }
 
     /**
      * Expects the dependency to "only" be used by given targets.
      *
-     * @param  callable(string, string, Violation|null): mixed  $failure
+     * @param  callable(string, string): mixed  $failure
      */
     public function expectToOnlyBeUsedIn(LayerOptions $options, callable $failure): void
     {
@@ -130,7 +137,7 @@ final class Blueprint
                     $objects = $this->getObjectsWhichUsesOnLayerAFromLayerB($namespaceLayer, $dependencyLayer);
                     [$dependOn, $target] = explode(' <- ', $objects[0]);
 
-                    $failure($target, $dependOn, $this->getUsagePathAndLines($namespaceLayer, $dependOn, $target));
+                    $failure($target, $dependOn);
                 }
             }
         }
@@ -164,42 +171,5 @@ final class Blueprint
     public static function assertEquals(mixed $expected, mixed $actual, string $message = ''): void
     {
         Assert::assertEquals($expected, $actual, $message);
-    }
-
-    private function getUsagePathAndLines(Layer $layer, string $objectName, string $target): null|Violation
-    {
-        $dependOnObjects = array_filter(
-            $layer->getIterator()->getArrayCopy(), //@phpstan-ignore-line
-            fn (ObjectDescription $objectDescription): bool => $objectDescription->name === $objectName
-        );
-
-        /** @var ObjectDescription $dependOnObject */
-        $dependOnObject = array_pop($dependOnObjects);
-
-        $names = ServiceContainer::$nodeFinder->findInstanceOf(
-            $dependOnObject->stmts,
-            Name::class,
-        );
-
-        /** @var array<int, Name> $names */
-        $names = array_values(array_filter(
-            $names, static fn (Name $name): bool => $name->toString() === $target, // @phpstan-ignore-line
-        ));
-
-        if ($names === []) {
-            return null;
-        }
-
-        $startLine = $names[0]->getAttribute('startLine');
-        assert(is_int($startLine));
-
-        $endLine = $names[0]->getAttribute('endLine');
-        assert(is_int($endLine));
-
-        $path = preg_replace('/[\/\\\\]vendor[\/\\\\]composer[\/\\\\]\.\.[\/\\\\]\.\./', '', $dependOnObject->path);
-
-        assert($path !== null);
-
-        return new Violation($path, $startLine, $endLine);
     }
 }

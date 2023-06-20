@@ -8,7 +8,7 @@ use tests\TestCase;
 
 final class LayersTest extends TestCase
 {
-    public function test_make_layers_and_assert_depends(): void
+    public function test_make_layers_and_assert_depends()
     {
         $layers = $this->layer()->splitByNameRegex('/^(?\'layer\'.*\\\\Architecture\\\\Builders\\\\[^\\\\]+)/m');
 

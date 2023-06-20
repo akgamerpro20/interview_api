@@ -19,9 +19,8 @@ class TestingController extends BaseController
 {
     public function testing()
     {
-        $myNumber = 123456.784321;
-
-        return response()->json(number_format($myNumber, 2));
+        $data = Post::class;
+        return $data;
     }
 
     public function userPost($id)

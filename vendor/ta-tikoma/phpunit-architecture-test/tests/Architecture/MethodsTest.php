@@ -10,7 +10,7 @@ use tests\TestCase;
 
 final class MethodsTest extends TestCase
 {
-    public function test_layer_method_incoming_arguments_not_from(): void
+    public function test_layer_method_incoming_arguments_not_from()
     {
         $tests = $this->layer()->leaveByNameStart('tests');
         $filters = $this->layer()->leaveByNameStart('PHPUnit\\Architecture\\Filters');
@@ -18,20 +18,20 @@ final class MethodsTest extends TestCase
         $this->assertIncomingsNotFrom($filters, $tests);
     }
 
-    public function test_layer_method_incoming_arguments_from(): void
+    public function test_layer_method_incoming_arguments_from()
     {
         $assertMethods = $this->layer()
             ->leaveByNameStart('PHPUnit\\Architecture\\Asserts')
-            ->leaveByType(ObjectType::_TRAIT);
+            ->leaveByType(ObjectType::_TRAIT());
 
         $layerClass = $this->layer()
             ->leaveByNameStart(Layer::class)
-            ->leaveByType(ObjectType::_CLASS);
+            ->leaveByType(ObjectType::_CLASS());
 
         $this->assertIncomingsFrom($assertMethods, $layerClass);
     }
 
-    public function test_layer_method_size(): void
+    public function test_layer_method_size()
     {
         $filters = $this->layer()->leaveByNameStart('PHPUnit\\Architecture\\Filters');
 
@@ -40,7 +40,6 @@ final class MethodsTest extends TestCase
 
     /**
      * @param $parameter
-     * @phpstan-ignore-next-line
      */
     public function fakeDocBlockWithoutType($parameter)
     {

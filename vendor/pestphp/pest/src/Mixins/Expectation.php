@@ -296,8 +296,8 @@ final class Expectation
      */
     public function toHaveProperties(iterable $names, string $message = ''): self
     {
-        foreach ($names as $name => $value) {
-            is_int($name) ? $this->toHaveProperty($value, message: $message) : $this->toHaveProperty($name, $value, $message);
+        foreach ($names as $name) {
+            $this->toHaveProperty($name, message: $message);
         }
 
         return $this;
@@ -900,7 +900,7 @@ final class Expectation
      */
     private function export(mixed $value): string
     {
-        if (! $this->exporter instanceof \Pest\Support\Exporter) {
+        if ($this->exporter === null) {
             $this->exporter = Exporter::default();
         }
 

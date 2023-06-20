@@ -7,13 +7,12 @@ namespace PHPUnit\Architecture\Asserts\Properties;
 use PHPUnit\Architecture\Asserts\Methods\ObjectMethodsDescription;
 use PHPUnit\Architecture\Asserts\Properties\Elements\ObjectProperties;
 use PHPUnit\Architecture\Asserts\Properties\Elements\PropertyDescription;
-use PHPUnit\Architecture\Elements\ObjectDescription;
 use ReflectionProperty;
 
 /**
  * Describe object properties
  */
-abstract class ObjectPropertiesDescription extends ObjectMethodsDescription
+class ObjectPropertiesDescription extends ObjectMethodsDescription
 {
     /**
      * Object properties
@@ -22,8 +21,8 @@ abstract class ObjectPropertiesDescription extends ObjectMethodsDescription
 
     public static function make(string $path): ?self
     {
-        /** @var ObjectDescription|null $description */
         $description = parent::make($path);
+
         if ($description === null) {
             return null;
         }

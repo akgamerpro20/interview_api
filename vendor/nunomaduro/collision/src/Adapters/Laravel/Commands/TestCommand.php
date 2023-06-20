@@ -195,7 +195,7 @@ class TestCommand extends Command
 
         if ($this->option('ansi')) {
             $arguments[] = '--colors=always';
-        } elseif ($this->option('no-ansi')) { // @phpstan-ignore-line
+        } elseif ($this->option('no-ansi')) {
             $arguments[] = '--colors=never';
         } elseif ((new Console)->hasColorSupport()) {
             $arguments[] = '--colors=always';
@@ -388,5 +388,21 @@ class TestCommand extends Command
     protected function isParallelDependenciesInstalled()
     {
         return class_exists(\ParaTest\ParaTestCommand::class);
+    }
+
+    /**
+     * Get the composer command for the environment.
+     *
+     * @return string
+     */
+    protected function findComposer()
+    {
+        $composerPath = getcwd().'/composer.phar';
+
+        if (file_exists($composerPath)) {
+            return '"'.PHP_BINARY.'" '.$composerPath;
+        }
+
+        return 'composer';
     }
 }

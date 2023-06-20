@@ -219,8 +219,6 @@ interface Emitter
 
     public function testRunnerTriggeredWarning(string $message): void;
 
-    public function testRunnerExecutionAborted(): void;
-
     public function testRunnerExecutionFinished(): void;
 
     public function testRunnerFinished(): void;

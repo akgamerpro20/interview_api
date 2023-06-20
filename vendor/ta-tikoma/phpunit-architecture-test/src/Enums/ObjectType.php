@@ -4,10 +4,18 @@ declare(strict_types=1);
 
 namespace PHPUnit\Architecture\Enums;
 
-enum ObjectType: string
+use MyCLabs\Enum\Enum;
+
+/**
+ * @method static static _CLASS()
+ * @method static static _ENUM()
+ * @method static static _TRAIT()
+ * @method static static _INTERFACE()
+ */
+final class ObjectType extends Enum
 {
-    case _CLASS     = 'class';
-    case _ENUM      = 'enum';
-    case _TRAIT     = 'trait';
-    case _INTERFACE = 'interface';
+    private const _CLASS     = 'class';
+    private const _ENUM      = 'enum';
+    private const _TRAIT     = 'trait';
+    private const _INTERFACE = 'interface';
 }

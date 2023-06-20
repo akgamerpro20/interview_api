@@ -30,10 +30,7 @@ final class Backtrace
 
             $traceFile = str_replace(DIRECTORY_SEPARATOR, '/', $trace[self::FILE]);
 
-            if (
-                Str::endsWith($traceFile, 'overrides/Runner/TestSuiteLoader.php') ||
-                Str::endsWith($traceFile, 'src/Bootstrappers/BootFiles.php')
-            ) {
+            if (Str::endsWith($traceFile, 'overrides/Runner/TestSuiteLoader.php')) {
                 break;
             }
 

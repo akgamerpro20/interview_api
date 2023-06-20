@@ -8,20 +8,22 @@ use PhpParser\Node;
 use PHPUnit\Architecture\Asserts\Inheritance\ObjectInheritanceDescription;
 use PHPUnit\Architecture\Asserts\Methods\Elements\MethodDescription;
 use PHPUnit\Architecture\Asserts\Methods\Elements\ObjectMethods;
-use PHPUnit\Architecture\Elements\ObjectDescription;
 use PHPUnit\Architecture\Services\ServiceContainer;
 
 /**
  * Describe object methods
  */
-abstract class ObjectMethodsDescription extends ObjectInheritanceDescription
+class ObjectMethodsDescription extends ObjectInheritanceDescription
 {
+    /**
+     * Object methods
+     */
     public ObjectMethods $methods;
 
     public static function make(string $path): ?self
     {
-        /** @var ObjectDescription|null $description */
         $description = parent::make($path);
+
         if ($description === null) {
             return null;
         }

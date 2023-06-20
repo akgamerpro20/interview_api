@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace PHPUnit\Architecture\Elements\Layer;
 
 use Closure;
-use Exception;
 use PHPUnit\Architecture\Elements\ObjectDescription;
 use PHPUnit\Architecture\Enums\ObjectType;
 use PHPUnit\Architecture\Storage\Filesystem;
@@ -17,10 +16,6 @@ trait LayerLeave
     public function leaveByPathStart(string $path): Layer
     {
         $path = realpath(Filesystem::getBaseDir() . $path);
-        if ($path === false) {
-            throw new Exception("Path '{$path}' not found");
-        }
-
         $length = strlen($path);
 
         return $this->leave(static function (ObjectDescription $objectDescription) use ($path, $length): bool {
@@ -47,7 +42,7 @@ trait LayerLeave
     public function leaveByType(ObjectType $type): Layer
     {
         return $this->leave(static function (ObjectDescription $objectDescription) use ($type): bool {
-            return $objectDescription->type === $type;
+            return $objectDescription->type->equals($type);
         });
     }
 }

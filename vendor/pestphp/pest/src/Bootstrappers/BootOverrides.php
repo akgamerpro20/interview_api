@@ -24,7 +24,6 @@ final class BootOverrides implements Bootstrapper
         'TextUI/Command/WarmCodeCoverageCacheCommand.php',
         'TextUI/Output/Default/ProgressPrinter/TestSkippedSubscriber.php',
         'TextUI/TestSuiteFilterProcessor.php',
-        'Event/Value/ThrowableBuilder.php',
     ];
 
     /**

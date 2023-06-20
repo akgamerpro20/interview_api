@@ -6,6 +6,7 @@ namespace Pest\Arch\Objects;
 
 use Error;
 use PHPUnit\Architecture\Elements\ObjectDescription;
+use PHPUnit\Architecture\Elements\ObjectDescriptionBase;
 
 /**
  * @internal

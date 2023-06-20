@@ -9,10 +9,7 @@
  */
 namespace PHPUnit\Event;
 
-use function gc_status;
 use PHPUnit\Event\Telemetry\HRTime;
-use PHPUnit\Event\Telemetry\Php81GarbageCollectorStatusProvider;
-use PHPUnit\Event\Telemetry\Php83GarbageCollectorStatusProvider;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for PHPUnit
@@ -90,8 +87,7 @@ final class Facade
             $dispatcher,
             new Telemetry\System(
                 new Telemetry\SystemStopWatchWithOffset($offset),
-                new Telemetry\SystemMemoryMeter,
-                $this->garbageCollectorStatusProvider()
+                new Telemetry\SystemMemoryMeter
             )
         );
 
@@ -134,8 +130,7 @@ final class Facade
     {
         return new Telemetry\System(
             new Telemetry\SystemStopWatch,
-            new Telemetry\SystemMemoryMeter,
-            $this->garbageCollectorStatusProvider()
+            new Telemetry\SystemMemoryMeter
         );
     }
 
@@ -219,7 +214,6 @@ final class Facade
             TestRunner\BootstrapFinished::class,
             TestRunner\Configured::class,
             TestRunner\EventFacadeSealed::class,
-            TestRunner\ExecutionAborted::class,
             TestRunner\ExecutionFinished::class,
             TestRunner\ExecutionStarted::class,
             TestRunner\ExtensionLoadedFromPhar::class,
@@ -243,14 +237,5 @@ final class Facade
                 $eventClass
             );
         }
-    }
-
-    private function garbageCollectorStatusProvider(): Telemetry\GarbageCollectorStatusProvider
-    {
-        if (!isset(gc_status()['running'])) {
-            return new Php81GarbageCollectorStatusProvider;
-        }
-
-        return new Php83GarbageCollectorStatusProvider;
     }
 }

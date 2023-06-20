@@ -32,55 +32,21 @@ use SebastianBergmann\Complexity\CyclomaticComplexityCalculatingVisitor;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
- *
- * @psalm-type CodeUnitFunctionType = array{
- *     name: string,
- *     namespacedName: string,
- *     namespace: string,
- *     signature: string,
- *     startLine: int,
- *     endLine: int,
- *     ccn: int
- * }
- * @psalm-type CodeUnitMethodType = array{
- *     methodName: string,
- *     signature: string,
- *     visibility: string,
- *     startLine: int,
- *     endLine: int,
- *     ccn: int
- * }
- * @psalm-type CodeUnitClassType = array{
- *     name: string,
- *     namespacedName: string,
- *     namespace: string,
- *     startLine: int,
- *     endLine: int,
- *     methods: array<string, CodeUnitMethodType>
- * }
- * @psalm-type CodeUnitTraitType = array{
- *     name: string,
- *     namespacedName: string,
- *     namespace: string,
- *     startLine: int,
- *     endLine: int,
- *     methods: array<string, CodeUnitMethodType>
- * }
  */
 final class CodeUnitFindingVisitor extends NodeVisitorAbstract
 {
     /**
-     * @psalm-var array<string, CodeUnitClassType>
+     * @psalm-var array<string,array{name: string, namespacedName: string, namespace: string, startLine: int, endLine: int, methods: array<string,array{methodName: string, signature: string, visibility: string, startLine: int, endLine: int, ccn: int}>}>
      */
     private array $classes = [];
 
     /**
-     * @psalm-var array<string, CodeUnitTraitType>
+     * @psalm-var array<string,array{name: string, namespacedName: string, namespace: string, startLine: int, endLine: int, methods: array<string,array{methodName: string, signature: string, visibility: string, startLine: int, endLine: int, ccn: int}>}>
      */
     private array $traits = [];
 
     /**
-     * @psalm-var array<string, CodeUnitFunctionType>
+     * @psalm-var array<string,array{name: string, namespacedName: string, namespace: string, signature: string, startLine: int, endLine: int, ccn: int}>
      */
     private array $functions = [];
 
@@ -118,7 +84,7 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
     }
 
     /**
-     * @psalm-return array<string, CodeUnitClassType>
+     * @psalm-return array<string,array{name: string, namespacedName: string, namespace: string, startLine: int, endLine: int, methods: array<string,array{methodName: string, signature: string, visibility: string, startLine: int, endLine: int, ccn: int}>}>
      */
     public function classes(): array
     {
@@ -126,7 +92,7 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
     }
 
     /**
-     * @psalm-return array<string, CodeUnitTraitType>
+     * @psalm-return array<string,array{name: string, namespacedName: string, namespace: string, startLine: int, endLine: int, methods: array<string,array{methodName: string, signature: string, visibility: string, startLine: int, endLine: int, ccn: int}>}>
      */
     public function traits(): array
     {
@@ -134,7 +100,7 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
     }
 
     /**
-     * @psalm-return array<string, CodeUnitFunctionType>
+     * @psalm-return array<string,array{name: string, namespacedName: string, namespace: string, signature: string, startLine: int, endLine: int, ccn: int}>
      */
     public function functions(): array
     {

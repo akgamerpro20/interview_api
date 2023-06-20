@@ -25,7 +25,7 @@ final class Container
      */
     public static function getInstance(): self
     {
-        if (! self::$instance instanceof \Pest\Support\Container) {
+        if (self::$instance === null) {
             self::$instance = new self();
         }
 
@@ -72,7 +72,7 @@ final class Container
         if ($reflectionClass->isInstantiable()) {
             $constructor = $reflectionClass->getConstructor();
 
-            if ($constructor instanceof \ReflectionMethod) {
+            if ($constructor !== null) {
                 $params = array_map(
                     function (ReflectionParameter $param) use ($id): object|string {
                         $candidate = Reflection::getParameterClassName($param);
@@ -80,7 +80,7 @@ final class Container
                         if ($candidate === null) {
                             $type = $param->getType();
                             /* @phpstan-ignore-next-line */
-                            if ($type instanceof \ReflectionType && $type->isBuiltin()) {
+                            if ($type !== null && $type->isBuiltin()) {
                                 $candidate = $param->getName();
                             } else {
                                 throw ShouldNotHappen::fromMessage(sprintf('The type of `$%s` in `%s` cannot be determined.', $id, $param->getName()));

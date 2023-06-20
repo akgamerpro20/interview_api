@@ -17,7 +17,7 @@ final class ObjectsStorage
         $objectMap = [];
 
         foreach (Filesystem::files() as $path) {
-            /** @var ObjectDescription|null $description */
+            /** @var ObjectDescription $description */
             $description = ServiceContainer::$descriptionClass::make($path);
             if ($description === null) {
                 continue;

@@ -65,6 +65,7 @@ final class TestSuiteBuilder
                     $reflector->getFileName(),
                     $reflector->getStartLine(),
                 );
+                // @codeCoverageIgnoreStart
             } catch (ReflectionException $e) {
                 throw new RuntimeException(
                     $e->getMessage(),
@@ -72,6 +73,7 @@ final class TestSuiteBuilder
                     $e
                 );
             }
+            // @codeCoverageIgnoreEnd
         }
 
         if ($testSuite->isForTestClass()) {
@@ -85,6 +87,7 @@ final class TestSuiteBuilder
                     $reflector->getFileName(),
                     $reflector->getStartLine(),
                 );
+                // @codeCoverageIgnoreStart
             } catch (ReflectionException $e) {
                 throw new RuntimeException(
                     $e->getMessage(),
@@ -92,6 +95,7 @@ final class TestSuiteBuilder
                     $e
                 );
             }
+            // @codeCoverageIgnoreEnd
         }
 
         return new TestSuiteWithName(

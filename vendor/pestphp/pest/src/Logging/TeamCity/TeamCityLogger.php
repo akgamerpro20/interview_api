@@ -34,7 +34,6 @@ use PHPUnit\Event\TestSuite\Finished as TestSuiteFinished;
 use PHPUnit\Event\TestSuite\Started as TestSuiteStarted;
 use PHPUnit\Event\UnknownSubscriberTypeException;
 use PHPUnit\TestRunner\TestResult\Facade as TestResultFacade;
-use ReflectionClass;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -44,8 +43,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 final class TeamCityLogger
 {
     private ?HRTime $time = null;
-
-    private bool $isSummaryTestCountPrinted = false;
 
     /**
      * @throws EventFacadeIsSealedException
@@ -69,15 +66,6 @@ final class TeamCityLogger
         );
 
         $this->output($message);
-
-        if (! $this->isSummaryTestCountPrinted) {
-            $this->isSummaryTestCountPrinted = true;
-            $message = ServiceMessage::testSuiteCount(
-                $this->converter->getTestSuiteSize($event->testSuite())
-            );
-
-            $this->output($message);
-        }
     }
 
     public function testSuiteFinished(TestSuiteFinished $event): void
@@ -181,7 +169,7 @@ final class TeamCityLogger
 
     public function testFinished(Finished $event): void
     {
-        if (! $this->time instanceof \PHPUnit\Event\Telemetry\HRTime) {
+        if ($this->time === null) {
             throw ShouldNotHappen::fromMessage('Start time has not been set.');
         }
 
@@ -208,17 +196,13 @@ final class TeamCityLogger
         $style = new Style($this->output);
 
         $telemetry = $event->telemetryInfo();
-
         if ($this->withoutDuration) {
-            $reflector = new ReflectionClass($telemetry);
-
-            $property = $reflector->getProperty('current');
-            $property->setAccessible(true);
-            $snapshot = $property->getValue($telemetry);
-            assert($snapshot instanceof Snapshot);
-
             $telemetry = new Info(
-                $snapshot,
+                new Snapshot(
+                    $telemetry->time(),
+                    $telemetry->memoryUsage(),
+                    $telemetry->peakMemoryUsage(),
+                ),
                 Duration::fromSecondsAndNanoseconds(1, 0),
                 $telemetry->memoryUsageSinceStart(),
                 $telemetry->durationSincePrevious(),

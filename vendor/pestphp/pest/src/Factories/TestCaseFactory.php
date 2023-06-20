@@ -217,7 +217,7 @@ final class TestCaseFactory
         }
 
         if (! $method->receivesArguments()) {
-            if (! $method->closure instanceof \Closure) {
+            if ($method->closure === null) {
                 throw ShouldNotHappen::fromMessage('The test closure may not be empty.');
             }
 

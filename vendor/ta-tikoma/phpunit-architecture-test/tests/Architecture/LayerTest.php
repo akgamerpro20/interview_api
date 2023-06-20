@@ -10,7 +10,7 @@ use tests\TestCase;
 
 final class LayerTest extends TestCase
 {
-    public function test_make_layers_from_directories(): void
+    public function test_make_layers_from_directories()
     {
         $app = $this->layer()->leaveByPathStart('src');
         $tests = $this->layer()->leaveByPathStart('tests');
@@ -19,7 +19,7 @@ final class LayerTest extends TestCase
         $this->assertDependOn($tests, $app);
     }
 
-    public function test_layer_dependens_in_own_namespace(): void
+    public function test_layer_dependens_in_own_namespace()
     {
         $objectTypeEnum = $this->layer()->leaveByNameStart(ObjectType::class);
         $visibilityEnum  = $this->layer()->leaveByNameStart(Visibility::class);
@@ -32,7 +32,7 @@ final class LayerTest extends TestCase
         $this->assertDependOn($class, $trait);
     }
 
-    public function test_make_layers_from_namespaces(): void
+    public function test_make_layers_from_namespaces()
     {
         $tests = $this->layer()->leaveByNameStart('tests');
         $app = $this->layer()->leaveByNameStart('PHPUnit\\Architecture');
@@ -41,7 +41,7 @@ final class LayerTest extends TestCase
         $this->assertDependOn($tests, $app);
     }
 
-    public function test_male_layer_from_namespace_regex_filter(): void
+    public function test_male_layer_from_namespace_regex_filter()
     {
         $assertTraits = $this->layer()
             ->leaveByNameRegex('/^PHPUnit\\\\Architecture\\\\Asserts\\\\[^\\\\]+\\\\.+Asserts$/');
@@ -53,14 +53,14 @@ final class LayerTest extends TestCase
         $this->assertDoesNotDependOn($layer, $assertTraits);
     }
 
-    public function test_layer_create_by_type(): void
+    public function test_layer_create_by_type()
     {
         $traits = $this->layer()
             ->leaveByNameRegex('/^PHPUnit\\\\Architecture\\\\Asserts\\\\[^\\\\]+\\\\.+Asserts$/');
 
         $traitsCheck = $this->layer()
             ->leaveByNameStart('PHPUnit\\Architecture\\Asserts')
-            ->leaveByType(ObjectType::_TRAIT);
+            ->leaveByType(ObjectType::_TRAIT());
 
         $this->assertTrue($traits->equals($traitsCheck));
     }
