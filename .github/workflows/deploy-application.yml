@@ -15,3 +15,9 @@ jobs:
         run: |
           npm install
           npm run prod
+
+      - name: Configure PHP 8.2
+        uses: shivammathur/setup-php@master
+        with:
+          php-version: 8.2
+          extensions: mbstring, ctype, fileinfo, openssl, PDO, bcmath, json, tokenizer, xml
