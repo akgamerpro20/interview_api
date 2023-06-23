@@ -28,7 +28,9 @@ jobs:
       - name: Directory Permissions
         run: chmod -R 777 storage bootstrap/cache
       - name: Create deployment artifacts
-        run: tar -czf app.tar.gz --exclude=*.git --exclude=node_modules --exclude=tests *
+        env:
+          GITHUB_SHA: ${{ github.sha }}
+        run: tar -czf "${GITHUB_SHA}".tar.gz --exclude=*.git --exclude=node_modules *
     #   - name: Create Database
     #     run: |
     #       mkdir -p database
