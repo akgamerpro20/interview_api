@@ -146,7 +146,8 @@ jobs:
             ln -s -f $STORAGE_PATH $RELEASE_PATH
             ln -s -n -f $RELEASE_PATH $ACTIVE_RELEASE_PATH
             cd $ACTIVE_RELEASE_PATH
-            php artisan cache:clear
+            php artisan key:generate
+            php artisan optimize:clear
 
     #   - name: Create Database
     #     run: |
