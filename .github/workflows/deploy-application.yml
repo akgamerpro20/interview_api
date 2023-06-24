@@ -66,6 +66,15 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: app-build
+      - name: Upload
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ matrix.server.ip }}
+          username: ${{ matrix.server.username }}
+          password: ${{ matrix.server.password }}
+          port: ${{ matrix.server.port }}
+          source: ${{ github.sha }}.tar.gz
+          target: ${{ matrix.server.path }}/artifacts
 
     #   - name: Create Database
     #     run: |
