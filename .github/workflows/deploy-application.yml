@@ -145,10 +145,7 @@ jobs:
             ln -s -f ${BASE_PATH}/.env $RELEASE_PATH
             ln -s -f $STORAGE_PATH $RELEASE_PATH
             ln -s -n -f $RELEASE_PATH $ACTIVE_RELEASE_PATH
-
-      - name: Cache Clear
-        run: |
-          php artisan cache:clear
+            $ACTIVE_RELEASE_PATH php artisan cache:clear
 
     #   - name: Create Database
     #     run: |
