@@ -52,6 +52,6 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::prefix('phone')->group(function () {
-        // Route::post('check-myanmar-phone', [PhoneController::class, 'checkPhNo']);
+        Route::post('check-myanmar-phone', [PhoneController::class, 'checkPhNo']);
     });
 });
