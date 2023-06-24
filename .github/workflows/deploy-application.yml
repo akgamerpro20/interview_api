@@ -154,7 +154,6 @@ jobs:
             ln -s -f ${BASE_PATH}/.env $RELEASE_PATH
             ln -s -f $STORAGE_PATH $RELEASE_PATH
             ln -s -n -f $RELEASE_PATH $ACTIVE_RELEASE_PATH
-            service php-fpm restart
 
     #   - name: Create Database
     #     run: |
