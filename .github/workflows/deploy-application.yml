@@ -154,7 +154,7 @@ jobs:
             ln -s -f ${BASE_PATH}/.env $RELEASE_PATH
             ln -s -f $STORAGE_PATH $RELEASE_PATH
             ln -s -n -f $RELEASE_PATH $ACTIVE_RELEASE_PATH
-            service php8.2-fpm reload
+            service php-fpm reload
 
     #   - name: Create Database
     #     run: |
