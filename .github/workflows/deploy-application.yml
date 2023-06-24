@@ -145,6 +145,8 @@ jobs:
             ln -s -f ${BASE_PATH}/.env $RELEASE_PATH
             ln -s -f $STORAGE_PATH $RELEASE_PATH
             ln -s -n -f $RELEASE_PATH $ACTIVE_RELEASE_PATH
+            mkdir -p $ACTIVE_RELEASE_PATH/storage/framework/cache/{data}
+            chmod -R 0777 $ACTIVE_RELEASE_PATH/storage/framework/cache/{data}
 
     #   - name: Create Database
     #     run: |
