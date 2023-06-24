@@ -1,9 +1,8 @@
 [
     {
-        "name": "ak-d-1",
-        "ip": "157.230.34.244",
+        "name": "server_1 (ak-d-1)",
+        "ip": "165.232.171.9",
         "username": "root",
-        "password": "github2021Actions",
         "port": "22",
         "beforeHooks": "echo ${RELEASE_PATH}",
         "afterHooks": "",
