@@ -1,0 +1,12 @@
+[
+    {
+        "name": "ak-d-1",
+        "ip": "157.230.34.244",
+        "username": "root",
+        "password": "github2021Actions",
+        "port": "22",
+        "beforeHooks": "",
+        "afterHooks": "",
+        "path": "/var/www/html"
+    }
+]
