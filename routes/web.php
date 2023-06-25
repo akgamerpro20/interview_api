@@ -1,7 +1,8 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
+use App\Models\Car;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProfileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,7 +20,8 @@ use Illuminate\Support\Facades\Route;
 // });
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    $cars = Car::get();
+    return view('dashboard', compact('cars'));
 })->name('dashboard');
 
 Route::middleware('auth')->group(function () {

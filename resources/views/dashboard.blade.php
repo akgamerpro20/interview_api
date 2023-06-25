@@ -12,6 +12,27 @@
                     {{ __("You're logged in!") }}
                 </div>
             </div>
+
+            <table class="bg-white overflow-hidden shadow-sm sm:rounded-lg" style="margin-top: 20px;">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($cars as $key => $car)
+                    <tr>
+                        <td>{{ $key++ }}</td>
+                        <td>{{ $car->name }}</td>
+                        <td>{{ $car->price }}</td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+
         </div>
     </div>
+
 </x-app-layout>
