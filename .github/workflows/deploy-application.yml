@@ -149,4 +149,4 @@ jobs:
             php artisan key:generate
             php artisan optimize:clear
             php artisan cache:clear
-            php artisan migrate:refresh
+            php artisan migrate
