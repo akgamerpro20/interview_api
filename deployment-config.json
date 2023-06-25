@@ -7,5 +7,14 @@
         "beforeHooks": "echo ${RELEASE_PATH}",
         "afterHooks": "",
         "path": "/var/www/html"
+    },
+    {
+        "name": "server_2 (ak-d2)",
+        "ip": "134.209.108.83",
+        "username": "root",
+        "port": "22",
+        "beforeHooks": "echo ${RELEASE_PATH}",
+        "afterHooks": "",
+        "path": "/var/www/html"
     }
 ]
