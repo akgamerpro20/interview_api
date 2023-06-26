@@ -7,13 +7,26 @@ if (!function_exists('uploadImageFile')) {
 
 	function uploadImageFile($file, $imagePath)
 	{
-		$imageDir = public_path() . $imagePath;
+		// // $imageDir = public_path() . $imagePath;
 
-		$name = Str::random(6) . '.' . $file->getClientOriginalExtension();
+		// $name = Str::random(6) . '.' . $file->getClientOriginalExtension();
 
-		$file->storeAs($imagePath, $name);
+		// $day = date('d');
+		// $month = date('m');
+		// $year = date('Y');
 
-		return "{$imagePath}{$name}";
+		// $file_path = env('IMAGE_FOLDER', 'interview_api_proj') . '/' . $year . '/' . $month . '/' . $day . '/' . $imagePath;
+
+		// // $file->storeAs($imagePath, $name);
+		// Storage::disk('do_spaces')->put($file_path . $name, $file, 'public');
+		$fileName = (string) Str::uuid();
+
+		Storage::disk('do_spaces')->put(
+			"{$imagePath}/{$fileName}",
+			file_get_contents($file)
+		);
+
+		return "{$imagePath}{$fileName}";
 	}
 }
 
@@ -21,7 +34,7 @@ if (!function_exists('image_path')) {
 
 	function image_path($value, $default = 1)
 	{
-		return is_null($value) ? asset("../img/no-user.png") : Storage::url($value);
+		return is_null($value) ? asset("../img/no-user.png") : Storage::disk('do_spaces')->url($value);
 	}
 }
 
@@ -29,7 +42,9 @@ if (!function_exists('deleteImage')) {
 
 	function deleteImage($imagePath)
 	{
-		\Storage::delete($imagePath);
+		if ($imagePath) {
+			Storage::disk('do_spaces')->delete($imagePath);
+		}
 	}
 }
 
