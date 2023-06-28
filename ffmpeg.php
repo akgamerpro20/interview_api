@@ -34,7 +34,6 @@ try {
 
         if ($result != false && $result['id'] != null) {
 
-
             $conn = new PDO("mysql:host=$servername;dbname=defaultdb;port=25060", $dbusername, $dbpassword);
             $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $update = "UPDATE streamings SET status = 'process' WHERE id = " . $result['id'];
@@ -97,6 +96,9 @@ try {
                 mkdir("/var/www/stream/ads/" . $savefile_name . "/1280-720");
 
             }
+
+            echo $save_path_640_360;
+            return;
 
             $localpath = $result["path"];
 
