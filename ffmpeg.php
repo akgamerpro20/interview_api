@@ -32,7 +32,7 @@ try {
         $query->execute();
         $result = $query->fetch();
 
-        echo $result;
+        echo "hello";
         return;
         if ($result != false && $result['id'] != null) {
 
