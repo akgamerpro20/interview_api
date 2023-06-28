@@ -65,7 +65,7 @@ try {
                 // mkdir("/var/www/stream/trailers/" . $savefile_name . "/854-480");
                 // mkdir("/var/www/stream/trailers/" . $savefile_name . "/1280-720");
                 $directory = "/var/www/stream/trailers/" . $savefile_name . "/1280-720";
-                exec('sudo mkdir -m 777 ' . $directory);
+                exec('sudo mkdir -p ' . $directory);
 
                 //$save_path_426_240 = "/var/www/stream/trailers/".$savefile_name."/426-240/".$savefile_name.".m3u8";
                 // $save_path_640_360 = "/var/www/stream/trailers/" . $savefile_name . "/640-360/" . $savefile_name . ".m3u8";
