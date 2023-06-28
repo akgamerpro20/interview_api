@@ -7,31 +7,9 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    {{ __("You're logged in!") }}
-                </div>
+            <div style="position: relative; padding-top: 56.25%;">
+                <iframe src="https://iframe.mediadelivery.net/embed/134040/6ecc5e54-97fb-45c7-9a86-74b2ca62d92b?autoplay=true&preload=true" loading="lazy" style="border: none; position: absolute; top: 0; height: 100%; width: 100%;" allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;" allowfullscreen="true"></iframe>
             </div>
-
-            <table class="bg-white overflow-hidden shadow-sm sm:rounded-lg" style="margin-top: 20px;">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>Price</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($cars as $key => $car)
-                    <tr>
-                        <td>{{ $key++ }}</td>
-                        <td>{{ $car->name }}</td>
-                        <td>{{ $car->price }}</td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-
         </div>
     </div>
 
