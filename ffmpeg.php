@@ -59,15 +59,17 @@ try {
 
             } elseif ($result['type'] == "trailer") {
 
-                mkdir("/var/www/stream/trailers/" . $savefile_name);
+                // mkdir("/var/www/stream/trailers/" . $savefile_name);
                 //mkdir("/var/www/stream/trailers/".$savefile_name."/426-240");
-                mkdir("/var/www/stream/trailers/" . $savefile_name . "/640-360");
-                mkdir("/var/www/stream/trailers/" . $savefile_name . "/854-480");
-                mkdir("/var/www/stream/trailers/" . $savefile_name . "/1280-720");
+                // mkdir("/var/www/stream/trailers/" . $savefile_name . "/640-360");
+                // mkdir("/var/www/stream/trailers/" . $savefile_name . "/854-480");
+                // mkdir("/var/www/stream/trailers/" . $savefile_name . "/1280-720");
+                $directory = "/var/www/stream/trailers/" . $savefile_name . "/1280-720";
+                exec('sudo mkdir -m 777 ' . $directory);
 
                 //$save_path_426_240 = "/var/www/stream/trailers/".$savefile_name."/426-240/".$savefile_name.".m3u8";
-                $save_path_640_360 = "/var/www/stream/trailers/" . $savefile_name . "/640-360/" . $savefile_name . ".m3u8";
-                $save_path_854_480 = "/var/www/stream/trailers/" . $savefile_name . "/854-480/" . $savefile_name . ".m3u8";
+                // $save_path_640_360 = "/var/www/stream/trailers/" . $savefile_name . "/640-360/" . $savefile_name . ".m3u8";
+                // $save_path_854_480 = "/var/www/stream/trailers/" . $savefile_name . "/854-480/" . $savefile_name . ".m3u8";
                 $save_path_1280_720 = "/var/www/stream/trailers/" . $savefile_name . "/1280-720/" . $savefile_name . ".m3u8";
 
             } elseif ($result['type'] == "series") {
@@ -97,7 +99,7 @@ try {
 
             }
 
-            echo $save_path_640_360;
+            echo $save_path_1280_720;
             return;
 
             $localpath = $result["path"];
