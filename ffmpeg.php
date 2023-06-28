@@ -24,7 +24,7 @@ $dbusername = "doadmin";
 $dbpassword = 'AVNS_rLM2YTJyAioumr-mBT3';
 try {
     while (1) {
-        $conn = new PDO("mysql:host=$servername;dbname=defaultdb", $dbusername, $dbpassword);
+        $conn = new PDO("mysql:host=db-mysql-sgp1-28255-do-user-14089511-0.b.db.ondigitalocean.com;dbname=defaultdb;port=25060", $dbusername, $dbpassword);
         // set the PDO error mode to exception
         $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $sql = "SELECT * FROM streamings where status = 'no' LIMIT 1";
