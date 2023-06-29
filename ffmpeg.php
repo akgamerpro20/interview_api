@@ -99,9 +99,6 @@ try {
 
             }
 
-            echo $save_path_1280_720;
-            return;
-
             $localpath = $result["path"];
 
             $conn = new PDO("mysql:host=$servername;dbname=mizzima_transcoder", $dbusername, $dbpassword);
