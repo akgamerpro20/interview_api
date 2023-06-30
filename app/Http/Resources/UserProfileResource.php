@@ -19,7 +19,7 @@ class UserProfileResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'image' => image_path($this->image),
+            'image' => file_path($this->image),
             'email' => $this->email,
             'shop_count' => $this->shops->count(),
             'created_at' => Carbon::parse($this->created_at)->format('Y-m-d H:i:s'),

@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Pest\Arch\Factories;
 
+use Pest\Arch\Layer;
 use Pest\Arch\Objects\VendorObjectDescription;
 use Pest\Arch\Options\LayerOptions;
 use Pest\Arch\Repositories\ObjectsRepository;
 use PHPUnit\Architecture\Asserts\Dependencies\Elements\ObjectUses;
-use PHPUnit\Architecture\Elements\Layer\Layer;
 use PHPUnit\Architecture\Elements\ObjectDescription;
 
 /**
@@ -59,10 +59,14 @@ final class LayerFactory
             return $object;
         }, $this->objectsStorage->allByNamespace($name));
 
-        $layer = (new Layer($objects))->leaveByNameStart($name);
+        $layer = Layer::fromBase($objects)->leaveByNameStart($name);
 
         foreach ($options->exclude as $exclude) {
             $layer = $layer->excludeByNameStart($exclude);
+        }
+
+        foreach ($options->excludeCallbacks as $callback) {
+            $layer = $layer->exclude($callback);
         }
 
         return $layer;

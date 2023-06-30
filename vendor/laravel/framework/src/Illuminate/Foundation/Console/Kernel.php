@@ -118,11 +118,11 @@ class Kernel implements KernelContract
         $this->app = $app;
         $this->events = $events;
 
-        if (! $this->app->runningUnitTests()) {
-            $this->rerouteSymfonyCommandEvents();
-        }
-
         $this->app->booted(function () {
+            if (! $this->app->runningUnitTests()) {
+                $this->rerouteSymfonyCommandEvents();
+            }
+
             $this->defineConsoleSchedule();
         });
     }
@@ -217,6 +217,12 @@ class Kernel implements KernelContract
     public function terminate($input, $status)
     {
         $this->app->terminate();
+
+        if ($this->commandStartedAt === null) {
+            return;
+        }
+
+        $this->commandStartedAt->setTimezone($this->app['config']->get('app.timezone') ?? 'UTC');
 
         foreach ($this->commandLifecycleDurationHandlers as ['threshold' => $threshold, 'handler' => $handler]) {
             $end ??= Carbon::now();
@@ -474,7 +480,7 @@ class Kernel implements KernelContract
     /**
      * Set the Artisan application instance.
      *
-     * @param  \Illuminate\Console\Application  $artisan
+     * @param  \Illuminate\Console\Application|null  $artisan
      * @return void
      */
     public function setArtisan($artisan)

@@ -329,13 +329,13 @@ class TransactionController extends BaseController
         return $this->responseSuccess($data, 'Transaction List with Date!');
     }
 
-// protected function encrypt($data)
+    // protected function encrypt($data)
 // {
 //     $cipher = 'AES-128-CBC';
 //     $key = "ziju34gwzkj1s92z";
 //     $iv = "0b1c2f345789ade6";
 
-//     $value = openssl_encrypt(
+    //     $value = openssl_encrypt(
 //         utf8_encode($data),
 //         $cipher,
 //         $key,
@@ -343,25 +343,25 @@ class TransactionController extends BaseController
 //         $iv
 //     );
 
-//     if ($value === false) {
+    //     if ($value === false) {
 //         return response()->json(['error' => 'Could not encrypt the data.'], 422);
 //     }
 
-//     return base64_encode($value);
+    //     return base64_encode($value);
 // }
 
-// protected function decrypt($payload)
+    // protected function decrypt($payload)
 // {
 //     $cipher = 'AES-128-CBC';
 //     $key = "ziju34gwzkj1s92z";
 //     $iv = "0b1c2f345789ade6";
 
-//     $decrypted = openssl_decrypt(base64_decode($payload), $cipher, $key, OPENSSL_RAW_DATA, $iv);
+    //     $decrypted = openssl_decrypt(base64_decode($payload), $cipher, $key, OPENSSL_RAW_DATA, $iv);
 
-//     if ($decrypted === false) {
+    //     if ($decrypted === false) {
 //         return response()->json(['error' => 'Could not decrypt the data.'], 422);
 //     }
 
-//     return $decrypted;
+    //     return $decrypted;
 // }
 }

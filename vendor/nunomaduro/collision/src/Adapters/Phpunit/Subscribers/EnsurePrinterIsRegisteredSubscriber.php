@@ -37,12 +37,16 @@ use PHPUnit\Event\Test\PhpWarningTriggered;
 use PHPUnit\Event\Test\PhpWarningTriggeredSubscriber;
 use PHPUnit\Event\Test\PreparationStarted;
 use PHPUnit\Event\Test\PreparationStartedSubscriber;
+use PHPUnit\Event\Test\PrintedUnexpectedOutput;
+use PHPUnit\Event\Test\PrintedUnexpectedOutputSubscriber;
 use PHPUnit\Event\Test\Skipped;
 use PHPUnit\Event\Test\SkippedSubscriber;
 use PHPUnit\Event\Test\WarningTriggered;
 use PHPUnit\Event\Test\WarningTriggeredSubscriber;
 use PHPUnit\Event\TestRunner\Configured;
 use PHPUnit\Event\TestRunner\ConfiguredSubscriber;
+use PHPUnit\Event\TestRunner\DeprecationTriggered as TestRunnerDeprecationTriggered;
+use PHPUnit\Event\TestRunner\DeprecationTriggeredSubscriber as TestRunnerDeprecationTriggeredSubscriber;
 use PHPUnit\Event\TestRunner\ExecutionFinished;
 use PHPUnit\Event\TestRunner\ExecutionFinishedSubscriber;
 use PHPUnit\Event\TestRunner\ExecutionStarted;
@@ -86,6 +90,15 @@ if (class_exists(Version::class) && (int) Version::series() >= 10) {
                         $this->printer()->setDecorated(
                             $event->configuration()->colors()
                         );
+                    }
+                },
+
+                // Test
+                new class($printer) extends Subscriber implements PrintedUnexpectedOutputSubscriber
+                {
+                    public function notify(PrintedUnexpectedOutput $event): void
+                    {
+                        $this->printer()->testPrintedUnexpectedOutput($event);
                     }
                 },
 
@@ -149,6 +162,14 @@ if (class_exists(Version::class) && (int) Version::series() >= 10) {
                     public function notify(DeprecationTriggered $event): void
                     {
                         $this->printer()->testDeprecationTriggered($event);
+                    }
+                },
+
+                new class($printer) extends Subscriber implements TestRunnerDeprecationTriggeredSubscriber
+                {
+                    public function notify(TestRunnerDeprecationTriggered $event): void
+                    {
+                        $this->printer()->testRunnerDeprecationTriggered($event);
                     }
                 },
 

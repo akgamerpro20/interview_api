@@ -26,11 +26,11 @@ final class Init implements HandlesArguments
      * The files that will be created.
      */
     private const STUBS = [
-        'phpunit.xml' => 'phpunit.xml',
-        'Pest.php' => 'tests/Pest.php',
-        'TestCase.php' => 'tests/TestCase.php',
-        'Unit/ExampleTest.php' => 'tests/Unit/ExampleTest.php',
-        'Feature/ExampleTest.php' => 'tests/Feature/ExampleTest.php',
+        'phpunit.xml.stub' => 'phpunit.xml',
+        'Pest.php.stub' => 'tests/Pest.php',
+        'TestCase.php.stub' => 'tests/TestCase.php',
+        'Unit/ExampleTest.php.stub' => 'tests/Unit/ExampleTest.php',
+        'Feature/ExampleTest.php.stub' => 'tests/Feature/ExampleTest.php',
     ];
 
     /**
@@ -60,13 +60,13 @@ final class Init implements HandlesArguments
 
         $this->init();
 
-        return array_values($arguments);
+        exit(0);
     }
 
     /**
      * Initializes the tests directory.
      */
-    private function init(): void
+    public function init(): void
     {
         $testsBaseDir = "{$this->testSuite->rootPath}/tests";
 
@@ -112,8 +112,6 @@ final class Init implements HandlesArguments
         View::render('components.new-line');
 
         (new Thanks($this->input, $this->output))();
-
-        exit(0);
     }
 
     /**

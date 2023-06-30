@@ -29,7 +29,7 @@ class AuthRepository extends BaseRepository implements AuthRepositoryInterface
             $token = $user->createToken($user->email)->plainTextToken;
             $data = [
                 'id' => $user->id,
-                'image' => image_path($user->image),
+                'image' => file_path($user->image),
                 'email' => $user->email,
                 'password' => $user->password,
                 'token' => $token,

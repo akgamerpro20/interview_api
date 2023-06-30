@@ -30,7 +30,10 @@ final class Backtrace
 
             $traceFile = str_replace(DIRECTORY_SEPARATOR, '/', $trace[self::FILE]);
 
-            if (Str::endsWith($traceFile, 'overrides/Runner/TestSuiteLoader.php')) {
+            if (
+                Str::endsWith($traceFile, 'overrides/Runner/TestSuiteLoader.php') ||
+                Str::endsWith($traceFile, 'src/Bootstrappers/BootFiles.php')
+            ) {
                 break;
             }
 
@@ -101,8 +104,6 @@ final class Backtrace
     {
         $trace = debug_backtrace(self::BACKTRACE_OPTIONS)[1];
 
-        assert(array_key_exists('line', $trace));
-
-        return $trace['line'];
+        return $trace['line'] ?? 0;
     }
 }

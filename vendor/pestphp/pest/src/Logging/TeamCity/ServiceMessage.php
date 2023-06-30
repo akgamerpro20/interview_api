@@ -25,7 +25,7 @@ final class ServiceMessage
         $paramsToString = '';
 
         foreach ([...$this->parameters, 'flowId' => self::$flowId] as $key => $value) {
-            $value = self::escapeServiceMessage((string) $value);
+            $value = $this->escapeServiceMessage((string) $value);
             $paramsToString .= " $key='$value'";
         }
 
@@ -37,6 +37,13 @@ final class ServiceMessage
         return new self('testSuiteStarted', [
             'name' => $name,
             'locationHint' => $location === null ? null : "file://$location",
+        ]);
+    }
+
+    public static function testSuiteCount(int $count): self
+    {
+        return new self('testCount', [
+            'count' => $count,
         ]);
     }
 
@@ -120,7 +127,7 @@ final class ServiceMessage
         ]);
     }
 
-    private static function escapeServiceMessage(string $text): string
+    private function escapeServiceMessage(string $text): string
     {
         return str_replace(
             ['|', "'", "\n", "\r", ']', '['],

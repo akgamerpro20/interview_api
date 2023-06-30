@@ -54,6 +54,8 @@ final class WrapperRunner implements RunnerInterface
     /** @var list<SplFileInfo> */
     private array $progressFiles = [];
     /** @var list<SplFileInfo> */
+    private array $unexpectedOutputFiles = [];
+    /** @var list<SplFileInfo> */
     private array $testresultFiles = [];
     /** @var list<SplFileInfo> */
     private array $coverageFiles = [];
@@ -107,7 +109,7 @@ final class WrapperRunner implements RunnerInterface
         );
         $result      = TestResultFacade::result();
 
-        $this->pending = $suiteLoader->files;
+        $this->pending = $suiteLoader->tests;
         $this->printer->setTestCount($suiteLoader->testCount);
         $this->printer->start();
         $this->startWorkers();
@@ -165,6 +167,7 @@ final class WrapperRunner implements RunnerInterface
         $this->exitcode = max($this->exitcode, $worker->getExitCode());
         $this->printer->printFeedback(
             $worker->progressFile,
+            $worker->unexpectedOutputFile,
             $this->teamcityFiles,
         );
         $worker->reset();
@@ -208,9 +211,10 @@ final class WrapperRunner implements RunnerInterface
         $worker->start();
         $this->batches[$token] = 0;
 
-        $this->statusFiles[]     = $worker->statusFile;
-        $this->progressFiles[]   = $worker->progressFile;
-        $this->testresultFiles[] = $worker->testresultFile;
+        $this->statusFiles[]           = $worker->statusFile;
+        $this->progressFiles[]         = $worker->progressFile;
+        $this->unexpectedOutputFiles[] = $worker->unexpectedOutputFile;
+        $this->testresultFiles[]       = $worker->testresultFile;
 
         if (isset($worker->junitFile)) {
             $this->junitFiles[] = $worker->junitFile;
@@ -288,16 +292,19 @@ final class WrapperRunner implements RunnerInterface
         $this->generateLogs();
 
         $exitcode = (new ShellExitCodeCalculator())->calculate(
+            $this->options->configuration->failOnDeprecation(),
             $this->options->configuration->failOnEmptyTestSuite(),
-            $this->options->configuration->failOnRisky(),
-            $this->options->configuration->failOnWarning(),
             $this->options->configuration->failOnIncomplete(),
+            $this->options->configuration->failOnNotice(),
+            $this->options->configuration->failOnRisky(),
             $this->options->configuration->failOnSkipped(),
+            $this->options->configuration->failOnWarning(),
             $testResultSum,
         );
 
         $this->clearFiles($this->statusFiles);
         $this->clearFiles($this->progressFiles);
+        $this->clearFiles($this->unexpectedOutputFiles);
         $this->clearFiles($this->testresultFiles);
         $this->clearFiles($this->coverageFiles);
         $this->clearFiles($this->junitFiles);
@@ -314,7 +321,11 @@ final class WrapperRunner implements RunnerInterface
         }
 
         $coverageManager = new CodeCoverage();
-        $coverageManager->init($this->options->configuration, $this->codeCoverageFilterRegistry);
+        $coverageManager->init(
+            $this->options->configuration,
+            $this->codeCoverageFilterRegistry,
+            false,
+        );
         $coverageMerger = new CoverageMerger($coverageManager->codeCoverage());
         foreach ($this->coverageFiles as $coverageFile) {
             $coverageMerger->addCoverageFromFile($coverageFile);

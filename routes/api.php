@@ -1,6 +1,7 @@
 <?php
 
 use App\Repositories\Api\Controllers\PhoneController;
+use App\Repositories\Api\Controllers\PostController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UserController;
@@ -53,5 +54,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::prefix('phone')->group(function () {
         Route::post('check-myanmar-phone', [PhoneController::class, 'checkPhNo']);
+    });
+
+    Route::prefix('posts')->group(function () {
+        Route::post('create', [PostController::class, 'create']);
     });
 });

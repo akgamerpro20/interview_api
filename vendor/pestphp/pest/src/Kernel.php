@@ -33,6 +33,7 @@ final class Kernel
         Bootstrappers\BootFiles::class,
         Bootstrappers\BootView::class,
         Bootstrappers\BootKernelDump::class,
+        Bootstrappers\BootExcludeList::class,
     ];
 
     /**
@@ -67,10 +68,14 @@ final class Kernel
 
         CallsBoot::execute();
 
-        return new self(
+        $kernel = new self(
             new Application(),
             $output,
         );
+
+        Container::getInstance()->add(self::class, $kernel);
+
+        return $kernel;
     }
 
     /**

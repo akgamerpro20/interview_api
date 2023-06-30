@@ -40,12 +40,15 @@ final class TestCall
      */
     public function __construct(
         private readonly TestSuite $testSuite,
-        string $filename,
+        private readonly string $filename,
         string $description = null,
         Closure $closure = null
     ) {
         $this->testCaseMethod = new TestCaseMethodFactory($filename, $description, $closure);
+
         $this->descriptionLess = $description === null;
+
+        $this->testSuite->beforeEach->get($filename)[0]($this);
     }
 
     /**
@@ -81,7 +84,7 @@ final class TestCall
     /**
      * Asserts that the test throws the given `$exceptionClass` when called if the given condition is true.
      *
-     * @param (callable(): bool)|bool $condition
+     * @param  (callable(): bool)|bool  $condition
      */
     public function throwsIf(callable|bool $condition, string|int $exception, string $exceptionMessage = null, int $exceptionCode = null): self
     {
@@ -167,9 +170,43 @@ final class TestCall
 
         $this->testCaseMethod
             ->chains
-            ->addWhen($condition, Backtrace::file(), Backtrace::line(), 'markTestSkipped', [$message]);
+            ->addWhen($condition, $this->filename, Backtrace::line(), 'markTestSkipped', [$message]);
 
         return $this;
+    }
+
+    /**
+     * Skips the current test if the given test is running on Windows.
+     */
+    public function skipOnWindows(): self
+    {
+        return $this->skipOn('Windows', 'This test is skipped on [Windows].');
+    }
+
+    /**
+     * Skips the current test if the given test is running on Mac OS.
+     */
+    public function skipOnMac(): self
+    {
+        return $this->skipOn('Darwin', 'This test is skipped on [Mac].');
+    }
+
+    /**
+     * Skips the current test if the given test is running on Linux.
+     */
+    public function skipOnLinux(): self
+    {
+        return $this->skipOn('Linux', 'This test is skipped on [Linux].');
+    }
+
+    /**
+     * Skips the current test if the given test is running on the given operating systems.
+     */
+    private function skipOn(string $osFamily, string $message): self
+    {
+        return PHP_OS_FAMILY === $osFamily
+            ? $this->skip($message)
+            : $this;
     }
 
     /**
@@ -190,7 +227,7 @@ final class TestCall
     public function covers(string ...$classesOrFunctions): self
     {
         foreach ($classesOrFunctions as $classOrFunction) {
-            $isClass = class_exists($classOrFunction);
+            $isClass = class_exists($classOrFunction) || trait_exists($classOrFunction);
             $isMethod = function_exists($classOrFunction);
 
             if (! $isClass && ! $isMethod) {

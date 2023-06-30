@@ -88,7 +88,7 @@ class HasManyThrough extends Relation
      */
     public function one()
     {
-        return new HasOneThrough(
+        return HasOneThrough::noConstraints(fn () => new HasOneThrough(
             $this->getQuery(),
             $this->farParent,
             $this->throughParent,
@@ -96,7 +96,7 @@ class HasManyThrough extends Relation
             $this->secondKey,
             $this->getLocalKeyName(),
             $this->getSecondLocalKeyName(),
-        );
+        ));
     }
 
     /**
@@ -564,6 +564,24 @@ class HasManyThrough extends Relation
         $alias ??= $this->getRelated()->getKeyName();
 
         return $this->prepareQueryBuilder()->chunkById($count, $callback, $column, $alias);
+    }
+
+    /**
+     * Execute a callback over each item while chunking by ID.
+     *
+     * @param  callable  $callback
+     * @param  int  $count
+     * @param  string|null  $column
+     * @param  string|null  $alias
+     * @return bool
+     */
+    public function eachById(callable $callback, $count = 1000, $column = null, $alias = null)
+    {
+        $column = $column ?? $this->getRelated()->getQualifiedKeyName();
+
+        $alias = $alias ?? $this->getRelated()->getKeyName();
+
+        return $this->prepareQueryBuilder()->eachById($callback, $count, $column, $alias);
     }
 
     /**

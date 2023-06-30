@@ -11,14 +11,21 @@ use Pest\Arch\Repositories\ObjectsRepository;
 use Pest\Arch\Support\Composer;
 use Pest\Arch\ValueObjects\Dependency;
 use Pest\Arch\ValueObjects\Targets;
+use Pest\Arch\ValueObjects\Violation;
+use Pest\TestSuite;
+use PhpParser\Node\Name;
 use PHPUnit\Architecture\ArchitectureAsserts;
-use PHPUnit\Architecture\Elements\Layer\Layer;
 use PHPUnit\Architecture\Elements\ObjectDescription;
+use PHPUnit\Architecture\Services\ServiceContainer;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\ExpectationFailedException;
 
 /**
  * @internal
+ *
+ * @method void assertDependsOn(Layer $target, Layer $dependency)
+ * @method void assertDoesNotDependOn(Layer $target, Layer $dependency)
+ * @method array<int, string> getObjectsWhichUsesOnLayerAFromLayerB(Layer $layerA, Layer $layerB)
  */
 final class Blueprint
 {
@@ -70,54 +77,78 @@ final class Blueprint
     }
 
     /**
+     * Creates an expectation with the given callback.
+     *
+     * @param  callable(ObjectDescription $object): bool  $callback
+     * @param  callable(Violation): mixed  $failure
+     * @param  callable(string): int  $lineFinder
+     */
+    public function targeted(callable $callback, LayerOptions $options, callable $failure, callable $lineFinder): void
+    {
+        foreach ($this->target->value as $targetValue) {
+            $targetLayer = $this->layerFactory->make($options, $targetValue);
+
+            foreach ($targetLayer as $object) {
+                foreach ($options->exclude as $exclude) {
+                    if (str_starts_with($object->name, $exclude)) {
+                        continue 2;
+                    }
+                }
+
+                if ($callback($object)) {
+                    self::assertTrue(true);
+
+                    continue;
+                }
+
+                $path = (string) realpath($object->path);
+                $line = $lineFinder($path);
+                $path = substr($path, strlen(TestSuite::getInstance()->rootPath) + 1);
+
+                $failure(new Violation($path, $line, $line));
+            }
+        }
+    }
+
+    /**
      * Expects the target to "only" use the given dependencies.
      *
-     * @param  callable(string, string, string): mixed  $failure
+     * @param  callable(string, string, string, Violation|null): mixed  $failure
      */
     public function expectToOnlyUse(LayerOptions $options, callable $failure): void
     {
         foreach ($this->target->value as $targetValue) {
             $allowedUses = array_merge(
                 ...array_map(fn (Layer $layer): array => array_map(
-                    // @phpstan-ignore-next-line
                     fn (ObjectDescription $object): string => $object->name, iterator_to_array($layer->getIterator())), array_map(
                         fn (string $dependency): Layer => $this->layerFactory->make($options, $dependency),
-                        [$targetValue, ...array_map(
-                            fn (Dependency $dependency): string => $dependency->value, $this->dependencies->values
-                        )],
+                        [
+                            $targetValue, ...array_map(
+                                fn (Dependency $dependency): string => $dependency->value, $this->dependencies->values
+                            ),
+                        ],
                     )
                 ));
 
-            $notDeclaredDependencies = [];
-
-            foreach ($this->layerFactory->make($options, $targetValue) as $object) {
-                assert($object instanceof ObjectDescription);
-
+            $layer = $this->layerFactory->make($options, $targetValue);
+            foreach ($layer as $object) {
                 foreach ($object->uses as $use) {
-                    assert(is_string($use));
-
                     if (! in_array($use, $allowedUses, true)) {
-                        $notDeclaredDependencies[] = $use;
+                        $failure($targetValue, $this->dependencies->__toString(), $use, $this->getUsagePathAndLines($layer, $targetValue, $use));
+
+                        return;
                     }
                 }
             }
 
-            try {
-                if ($notDeclaredDependencies !== []) {
-                    throw new ExpectationFailedException($notDeclaredDependencies[0]);
-                }
-
-                self::assertTrue(true);
-            } catch (ExpectationFailedException $e) {
-                $failure($targetValue, $this->dependencies->__toString(), $e->getMessage());
-            }
+            self::assertTrue(true);
         }
     }
 
     /**
      * Expects the dependency to "only" be used by given targets.
      *
-     * @param  callable(string, string): mixed  $failure
+     * @param  callable(string, string, Violation|null): mixed  $failure
      */
     public function expectToOnlyBeUsedIn(LayerOptions $options, callable $failure): void
     {
@@ -137,7 +168,7 @@ final class Blueprint
                     $objects = $this->getObjectsWhichUsesOnLayerAFromLayerB($namespaceLayer, $dependencyLayer);
                     [$dependOn, $target] = explode(' <- ', $objects[0]);
 
-                    $failure($target, $dependOn);
+                    $failure($target, $dependOn, $this->getUsagePathAndLines($namespaceLayer, $dependOn, $target));
                 }
             }
         }
@@ -171,5 +202,42 @@ final class Blueprint
     public static function assertEquals(mixed $expected, mixed $actual, string $message = ''): void
     {
         Assert::assertEquals($expected, $actual, $message);
+    }
+
+    private function getUsagePathAndLines(Layer $layer, string $objectName, string $target): null|Violation
+    {
+        $dependOnObjects = array_filter(
+            $layer->getIterator()->getArrayCopy(), //@phpstan-ignore-line
+            fn (ObjectDescription $objectDescription): bool => $objectDescription->name === $objectName
+        );
+
+        /** @var ObjectDescription $dependOnObject */
+        $dependOnObject = array_pop($dependOnObjects);
+
+        $names = ServiceContainer::$nodeFinder->findInstanceOf(
+            $dependOnObject->stmts,
+            Name::class,
+        );
+
+        /** @var array<int, Name> $names */
+        $names = array_values(array_filter(
+            $names, static fn (Name $name): bool => $name->toString() === $target, // @phpstan-ignore-line
+        ));
+
+        if ($names === []) {
+            return null;
+        }
+
+        $startLine = $names[0]->getAttribute('startLine');
+        assert(is_int($startLine));
+
+        $endLine = $names[0]->getAttribute('endLine');
+        assert(is_int($endLine));
+
+        $path = preg_replace('/[\/\\\\]vendor[\/\\\\]composer[\/\\\\]\.\.[\/\\\\]\.\./', '', $dependOnObject->path);
+
+        assert($path !== null);
+
+        return new Violation($path, $startLine, $endLine);
     }
 }

@@ -43,7 +43,7 @@ if (! function_exists('beforeEach')) {
     /**
      * Runs the given closure before each test in the current file.
      *
-     * @return HigherOrderTapProxy<TestCall|TestCase>|TestCall|mixed
+     * @return HigherOrderTapProxy<TestCall|TestCase>|TestCall|TestCase|mixed
      */
     function beforeEach(Closure $closure = null): BeforeEachCall
     {
@@ -92,7 +92,7 @@ if (! function_exists('test')) {
      */
     function test(string $description = null, Closure $closure = null): HigherOrderTapProxy|TestCall
     {
-        if ($description === null && TestSuite::getInstance()->test !== null) {
+        if ($description === null && TestSuite::getInstance()->test instanceof \PHPUnit\Framework\TestCase) {
             return new HigherOrderTapProxy(TestSuite::getInstance()->test);
         }
 

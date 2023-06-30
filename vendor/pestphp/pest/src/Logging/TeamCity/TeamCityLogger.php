@@ -16,6 +16,7 @@ use Pest\Logging\TeamCity\Subscriber\TestPreparedSubscriber;
 use Pest\Logging\TeamCity\Subscriber\TestSkippedSubscriber;
 use Pest\Logging\TeamCity\Subscriber\TestSuiteFinishedSubscriber;
 use Pest\Logging\TeamCity\Subscriber\TestSuiteStartedSubscriber;
+use PHPUnit\Event\Code\Test;
 use PHPUnit\Event\EventFacadeIsSealedException;
 use PHPUnit\Event\Facade;
 use PHPUnit\Event\Telemetry\Duration;
@@ -34,6 +35,7 @@ use PHPUnit\Event\TestSuite\Finished as TestSuiteFinished;
 use PHPUnit\Event\TestSuite\Started as TestSuiteStarted;
 use PHPUnit\Event\UnknownSubscriberTypeException;
 use PHPUnit\TestRunner\TestResult\Facade as TestResultFacade;
+use ReflectionClass;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -43,6 +45,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 final class TeamCityLogger
 {
     private ?HRTime $time = null;
+
+    private bool $isSummaryTestCountPrinted = false;
+
+    /**
+     * @var array<string, bool>
+     */
+    private array $testEvents = [];
 
     /**
      * @throws EventFacadeIsSealedException
@@ -66,6 +75,15 @@ final class TeamCityLogger
         );
 
         $this->output($message);
+
+        if (! $this->isSummaryTestCountPrinted) {
+            $this->isSummaryTestCountPrinted = true;
+            $message = ServiceMessage::testSuiteCount(
+                $this->converter->getTestSuiteSize($event->testSuite())
+            );
+
+            $this->output($message);
+        }
     }
 
     public function testSuiteFinished(TestSuiteFinished $event): void
@@ -96,12 +114,14 @@ final class TeamCityLogger
 
     public function testSkipped(Skipped $event): void
     {
-        $message = ServiceMessage::testIgnored(
-            $this->converter->getTestCaseMethodName($event->test()),
-            'This test was ignored.'
-        );
+        $this->whenFirstEventForTest($event->test(), function () use ($event): void {
+            $message = ServiceMessage::testIgnored(
+                $this->converter->getTestCaseMethodName($event->test()),
+                'This test was ignored.'
+            );
 
-        $this->output($message);
+            $this->output($message);
+        });
     }
 
     /**
@@ -110,17 +130,19 @@ final class TeamCityLogger
      */
     public function testErrored(Errored $event): void
     {
-        $testName = $this->converter->getTestCaseMethodName($event->test());
-        $message = $this->converter->getExceptionMessage($event->throwable());
-        $details = $this->converter->getExceptionDetails($event->throwable());
+        $this->whenFirstEventForTest($event->test(), function () use ($event): void {
+            $testName = $this->converter->getTestCaseMethodName($event->test());
+            $message = $this->converter->getExceptionMessage($event->throwable());
+            $details = $this->converter->getExceptionDetails($event->throwable());
 
-        $message = ServiceMessage::testFailed(
-            $testName,
-            $message,
-            $details,
-        );
+            $message = ServiceMessage::testFailed(
+                $testName,
+                $message,
+                $details,
+            );
 
-        $this->output($message);
+            $this->output($message);
+        });
     }
 
     /**
@@ -129,28 +151,30 @@ final class TeamCityLogger
      */
     public function testFailed(Failed $event): void
     {
-        $testName = $this->converter->getTestCaseMethodName($event->test());
-        $message = $this->converter->getExceptionMessage($event->throwable());
-        $details = $this->converter->getExceptionDetails($event->throwable());
+        $this->whenFirstEventForTest($event->test(), function () use ($event): void {
+            $testName = $this->converter->getTestCaseMethodName($event->test());
+            $message = $this->converter->getExceptionMessage($event->throwable());
+            $details = $this->converter->getExceptionDetails($event->throwable());
 
-        if ($event->hasComparisonFailure()) {
-            $comparison = $event->comparisonFailure();
-            $message = ServiceMessage::comparisonFailure(
-                $testName,
-                $message,
-                $details,
-                $comparison->actual(),
-                $comparison->expected()
-            );
-        } else {
-            $message = ServiceMessage::testFailed(
-                $testName,
-                $message,
-                $details,
-            );
-        }
+            if ($event->hasComparisonFailure()) {
+                $comparison = $event->comparisonFailure();
+                $message = ServiceMessage::comparisonFailure(
+                    $testName,
+                    $message,
+                    $details,
+                    $comparison->actual(),
+                    $comparison->expected()
+                );
+            } else {
+                $message = ServiceMessage::testFailed(
+                    $testName,
+                    $message,
+                    $details,
+                );
+            }
 
-        $this->output($message);
+            $this->output($message);
+        });
     }
 
     /**
@@ -159,17 +183,19 @@ final class TeamCityLogger
      */
     public function testConsideredRisky(ConsideredRisky $event): void
     {
-        $message = ServiceMessage::testIgnored(
-            $this->converter->getTestCaseMethodName($event->test()),
-            $event->message()
-        );
+        $this->whenFirstEventForTest($event->test(), function () use ($event): void {
+            $message = ServiceMessage::testIgnored(
+                $this->converter->getTestCaseMethodName($event->test()),
+                $event->message()
+            );
 
-        $this->output($message);
+            $this->output($message);
+        });
     }
 
     public function testFinished(Finished $event): void
     {
-        if ($this->time === null) {
+        if (! $this->time instanceof \PHPUnit\Event\Telemetry\HRTime) {
             throw ShouldNotHappen::fromMessage('Start time has not been set.');
         }
 
@@ -196,13 +222,17 @@ final class TeamCityLogger
         $style = new Style($this->output);
 
         $telemetry = $event->telemetryInfo();
+
         if ($this->withoutDuration) {
+            $reflector = new ReflectionClass($telemetry);
+
+            $property = $reflector->getProperty('current');
+            $property->setAccessible(true);
+            $snapshot = $property->getValue($telemetry);
+            assert($snapshot instanceof Snapshot);
+
             $telemetry = new Info(
-                new Snapshot(
-                    $telemetry->time(),
-                    $telemetry->memoryUsage(),
-                    $telemetry->peakMemoryUsage(),
-                ),
+                $snapshot,
                 Duration::fromSecondsAndNanoseconds(1, 0),
                 $telemetry->memoryUsageSinceStart(),
                 $telemetry->durationSincePrevious(),
@@ -247,5 +277,15 @@ final class TeamCityLogger
         }
 
         ServiceMessage::setFlowId($this->flowId);
+    }
+
+    private function whenFirstEventForTest(Test $test, callable $callback): void
+    {
+        $testIdentifier = $this->converter->getTestCaseLocation($test);
+
+        if (! isset($this->testEvents[$testIdentifier])) {
+            $this->testEvents[$testIdentifier] = true;
+            $callback();
+        }
     }
 }
