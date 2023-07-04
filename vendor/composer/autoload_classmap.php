@@ -100,6 +100,7 @@ return array(
     'App\\Repositories\\Api\\Services\\AuthService' => $baseDir . '/app/Repositories/Api/Services/AuthService.php',
     'App\\Repositories\\Api\\Services\\PostService' => $baseDir . '/app/Repositories/Api/Services/PostService.php',
     'App\\Repositories\\Api\\Services\\TransService' => $baseDir . '/app/Repositories/Api/Services/TransService.php',
+    'App\\Repositories\\Api\\Services\\UploadService' => $baseDir . '/app/Repositories/Api/Services/UploadService.php',
     'App\\Repositories\\Api\\Validators\\AuthValidator' => $baseDir . '/app/Repositories/Api/Validators/AuthValidator.php',
     'App\\Repositories\\Api\\Validators\\NotiValidator' => $baseDir . '/app/Repositories/Api/Validators/NotiValidator.php',
     'App\\Repositories\\Api\\Validators\\PostValidator' => $baseDir . '/app/Repositories/Api/Validators/PostValidator.php',

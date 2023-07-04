@@ -742,6 +742,7 @@ class ComposerStaticInit829de80b4c678381b46ec928251d23ba
         'App\\Repositories\\Api\\Services\\AuthService' => __DIR__ . '/../..' . '/app/Repositories/Api/Services/AuthService.php',
         'App\\Repositories\\Api\\Services\\PostService' => __DIR__ . '/../..' . '/app/Repositories/Api/Services/PostService.php',
         'App\\Repositories\\Api\\Services\\TransService' => __DIR__ . '/../..' . '/app/Repositories/Api/Services/TransService.php',
+        'App\\Repositories\\Api\\Services\\UploadService' => __DIR__ . '/../..' . '/app/Repositories/Api/Services/UploadService.php',
         'App\\Repositories\\Api\\Validators\\AuthValidator' => __DIR__ . '/../..' . '/app/Repositories/Api/Validators/AuthValidator.php',
         'App\\Repositories\\Api\\Validators\\NotiValidator' => __DIR__ . '/../..' . '/app/Repositories/Api/Validators/NotiValidator.php',
         'App\\Repositories\\Api\\Validators\\PostValidator' => __DIR__ . '/../..' . '/app/Repositories/Api/Validators/PostValidator.php',
