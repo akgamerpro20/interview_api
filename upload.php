@@ -15,13 +15,10 @@ try {
         $query->execute();
         $result = $query->fetch();
 
-        echo json_encode($result);
-        return;
-
         if ($result != false && $result['id'] != null) {
 
 
-            $conn = new PDO("mysql:host=$servername;dbname=mizzima_transcoder", $dbusername, $dbpassword);
+            $conn = new PDO("mysql:host=$servername;dbname=defaultdb;port=25060", $dbusername, $dbpassword);
             $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $update = "UPDATE streamings SET status = 'process' WHERE id = " . $result['id'];
 
@@ -36,16 +33,16 @@ try {
             $save_path_854_480 = "/var/www/stream/uploads/" . $savefile_name . "/854-480/" . $savefile_name . ".m3u8";
             $save_path_1280_720 = "/var/www/stream/uploads/" . $savefile_name . "/1280-720/" . $savefile_name . ".m3u8";
 
-            mkdir("/var/www/stream/uploads/" . $savefile_name);
-            mkdir("/var/www/stream/uploads/" . $savefile_name . "/640-360");
-            mkdir("/var/www/stream/uploads/" . $savefile_name . "/854-480");
-            mkdir("/var/www/stream/uploads/" . $savefile_name . "/1280-720");
-
-
+            $directory_640_360 = "/var/www/stream/uploads/" . $savefile_name . "/640-360";
+            $directory_854_480 = "/var/www/stream/uploads/" . $savefile_name . "/854-480";
+            $directory_1280_720 = "/var/www/stream/uploads/" . $savefile_name . "/1280-720";
+            exec('sudo mkdir -p ' . $directory_640_360);
+            exec('sudo mkdir -p ' . $directory_854_480);
+            exec('sudo mkdir -p ' . $directory_1280_720);
 
             $localpath = $result["path"];
 
-            $conn = new PDO("mysql:host=$servername;dbname=mizzima_transcoder", $dbusername, $dbpassword);
+            $conn = new PDO("mysql:host=$servername;dbname=defaultdb;port=25060", $dbusername, $dbpassword);
             $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $update = "UPDATE streamings SET status = 'transcoding' WHERE id = " . $result['id'];
 
@@ -74,10 +71,10 @@ try {
 
             //exec("ffmpeg -i ".$localpath." -s hd480 -c:v libx264 -crf 23 -c:a aac -strict -2 /mnt/volume_sgp1_01/mid_videos/".$savefile_name.".mp4");
 
-            exec('ncftpput -R -v -u "mizzimavod" -p "302c59d8-5abd-482d-88ad071e38db-7a5b-4789" "la.storage.bunnycdn.com" uploads /mnt/volume_sgp1_01/stream/uploads/' . $savefile_name);
+            exec('ncftpput -R -v -u "postvod" -p "3de83dbf-ef8f-4a90-a3862c083a6b-309d-4918" "sg.storage.bunnycdn.com" uploads /mnt/volume_sgp1_01/stream/uploads/' . $savefile_name);
 
 
-            $conn = new PDO("mysql:host=$servername;dbname=mizzima_transcoder", $dbusername, $dbpassword);
+            $conn = new PDO("mysql:host=$servername;dbname=defaultdb;port=25060", $dbusername, $dbpassword);
             $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $update = "UPDATE streamings SET status = 'yes' WHERE id = " . $result['id'];
 
@@ -88,18 +85,18 @@ try {
             //     delete_files($temp_path);
             // }
 
-            $stream_url = "http://trans.mizzimaburmese.com/uploads/" . $savefile_name . "/playlist.m3u8";
+            // $stream_url = "http://trans.mizzimaburmese.com/uploads/" . $savefile_name . "/playlist.m3u8";
 
-            $url = curl_init("http://mizzima.comquas.com/api/v3/post/video/approve");
-            curl_setopt($url, CURLOPT_POST, true);
-            curl_setopt($url, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
-            curl_setopt($url, CURLOPT_POSTFIELDS, json_encode(["video_id" => $result["video_id"], "url" => $stream_url]));
-            $result = curl_exec($url);
-            $code = curl_getinfo($url, CURLINFO_HTTP_CODE);
-            curl_close($url);
+            // $url = curl_init("http://mizzima.comquas.com/api/v3/post/video/approve");
+            // curl_setopt($url, CURLOPT_POST, true);
+            // curl_setopt($url, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+            // curl_setopt($url, CURLOPT_POSTFIELDS, json_encode(["video_id" => $result["video_id"], "url" => $stream_url]));
+            // $result = curl_exec($url);
+            // $code = curl_getinfo($url, CURLINFO_HTTP_CODE);
+            // curl_close($url);
 
 
-            delete_files("/var/www/stream/uploads/" . $savefile_name);
+            // delete_files("/var/www/stream/uploads/" . $savefile_name);
 
         } else {
             sleep(10);
