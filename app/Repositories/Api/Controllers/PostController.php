@@ -36,6 +36,7 @@ class PostController extends BaseController
         $attributes = $validator->validated();
 
         $video = $request->file('video');
+        dd($video);
 
         $video_name = null;
         if ($video) {
