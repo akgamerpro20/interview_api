@@ -71,7 +71,7 @@ try {
 
             //exec("ffmpeg -i ".$localpath." -s hd480 -c:v libx264 -crf 23 -c:a aac -strict -2 /mnt/volume_sgp1_01/mid_videos/".$savefile_name.".mp4");
 
-            exec('ncftpput -R -v -u "postvod" -p "3de83dbf-ef8f-4a90-a3862c083a6b-309d-4918" "sg.storage.bunnycdn.com" uploads /mnt/volume_sgp1_01/stream/uploads/' . $savefile_name);
+            exec('ncftpput -R -v -u "postvod" -p "3de83dbf-ef8f-4a90-a3862c083a6b-309d-4918" "sg.storage.bunnycdn.com" uploads /mnt/' . $savefile_name);
 
 
             $conn = new PDO("mysql:host=$servername;dbname=defaultdb;port=25060", $dbusername, $dbpassword);
