@@ -34,20 +34,8 @@ class PostController extends BaseController
         }
 
         $attributes = $validator->validated();
-        return $attributes;
 
-        $video = $request->file('video');
-        dd($video);
-
-        $video_name = null;
-        if ($video) {
-            $video_name = $this->uploadService->getFileVideo(
-                $video,
-                $this->post_video_folder
-            );
-        }
-
-        $post = $this->service->savePost($attributes, $this->post_video_folder, $video_name);
+        $post = $this->service->savePost($attributes, $this->post_video_folder, "hello");
 
         return $this->responseSuccess($post, 'Post Successfully!');
     }

@@ -12,7 +12,7 @@ class PostService
         $post = Post::create([
             "user_id" => auth()->user()->id,
             "text" => $params['text'],
-            "video_path" => file_path($post_video_folder . $video_name)
+            "video_path" => "test"
         ]);
 
         $this->saveStreaming($params, $post_video_folder . $video_name);
@@ -24,7 +24,7 @@ class PostService
     {
         Streaming::create([
             "name" => $params['text'],
-            "path" => file_path($videoPath),
+            "path" => "test",
             "status" => "up",
             "type" => "post_video",
             "hd" => 0,
