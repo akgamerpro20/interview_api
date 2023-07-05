@@ -10,7 +10,7 @@ class PostValidator
     {
         return Validator::make($params, [
             'text' => 'required|string|max:255',
-            'video' => 'required|file|mimetypes:video/mp4',
+            'video' => 'required|mimetypes:video/mp4',
         ]);
     }
 }
