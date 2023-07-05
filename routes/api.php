@@ -58,5 +58,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::prefix('posts')->group(function () {
         Route::post('create', [PostController::class, 'create']);
+        Route::post('video/approve', [PostController::class, 'ApproveVideo']);
     });
 });

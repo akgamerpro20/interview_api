@@ -39,4 +39,24 @@ class PostController extends BaseController
 
         return $this->responseSuccess($post, 'Post Successfully!');
     }
+
+
+    public function ApproveVideo(Request $request)
+    {
+        if ($request->id) {
+            $post = Post::where('id', $request->id)->first();
+
+            if ($post) {
+                $post->encrypt_video = $request->url;
+                $post->video_path = "active";
+                $post->update();
+
+                return response()->json(['message' => 'success'], 200);
+            } else {
+                return response()->json(['error' => 'Not Found Post Video!'], 422);
+            }
+        } else {
+            return response()->json(['error' => 'No have video id!'], 422);
+        }
+    }
 }
