@@ -25,6 +25,10 @@ use App\Repositories\Api\Controllers\NotificationController;
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
 
+Route::prefix('posts')->group(function () {
+    Route::post('video/approve', [PostController::class, 'ApproveVideo']);
+});
+
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('user/profile', [AuthController::class, 'userProfile']);
@@ -58,6 +62,5 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::prefix('posts')->group(function () {
         Route::post('create', [PostController::class, 'create']);
-        Route::post('video/approve', [PostController::class, 'ApproveVideo']);
     });
 });

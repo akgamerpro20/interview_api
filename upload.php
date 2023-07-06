@@ -88,20 +88,15 @@ try {
 
             $conn->exec($update);
 
-            //delet the local
-            // if ($temp_path != "") {
-            //     delete_files($temp_path);
-            // }
+            // $stream_url = "https://mypostvod.b-cdn.net/uploads/" . $savefile_name . "/playlist.m3u8";
 
-            $stream_url = "http://165.232.171.9/uploads/" . $savefile_name . "/playlist.m3u8";
-
-            $url = curl_init("http://http://165.232.171.9/api/posts/video/approve");
-            curl_setopt($url, CURLOPT_POST, true);
-            curl_setopt($url, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
-            curl_setopt($url, CURLOPT_POSTFIELDS, json_encode(["post_id" => $result["id"], "url" => $stream_url]));
-            $result = curl_exec($url);
-            $code = curl_getinfo($url, CURLINFO_HTTP_CODE);
-            curl_close($url);
+            // $url = curl_init("http://165.232.171.9/api/posts/video/approve");
+            // curl_setopt($url, CURLOPT_POST, true);
+            // curl_setopt($url, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+            // curl_setopt($url, CURLOPT_POSTFIELDS, json_encode(["post_id" => $result["id"], "url" => $stream_url]));
+            // $result = curl_exec($url);
+            // $code = curl_getinfo($url, CURLINFO_HTTP_CODE);
+            // curl_close($url);
 
             delete_files("/var/www/stream/uploads/" . $savefile_name);
 
