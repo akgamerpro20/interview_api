@@ -99,6 +99,8 @@ try {
             // curl_close($url);
 
             // delete_files("/var/www/stream/uploads/" . $savefile_name);
+            echo "success";
+            return;
 
         } else {
             sleep(10);
