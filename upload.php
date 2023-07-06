@@ -35,17 +35,14 @@ try {
 
         if ($result != false && $result['id'] != null) {
 
-
             $conn = new PDO("mysql:host=$servername;dbname=defaultdb;port=25060", $dbusername, $dbpassword);
             $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $update = "UPDATE streamings SET status = 'process' WHERE id = " . $result['id'];
 
             $conn->exec($update);
 
-
             $savefile_name = preg_replace('/\\.[^.\\s]{3,4}$/', '', $result['name']);
             $savefile_name = str_replace(" ", "_", $savefile_name);
-
 
             $save_path_640_360 = "/var/www/stream/uploads/" . $savefile_name . "/640-360/" . $savefile_name . ".m3u8";
             $save_path_854_480 = "/var/www/stream/uploads/" . $savefile_name . "/854-480/" . $savefile_name . ".m3u8";
@@ -67,9 +64,6 @@ try {
             $conn->exec($update);
 
             exec("ffmpeg  -i " . $localpath . " -profile:v baseline -r 30  -level 3.0 -s 640x360 -start_number 0 -hls_time 10 -hls_list_size 0 -vcodec h264 -acodec aac -b:v 400k -b:a 64k -f hls " . $save_path_640_360 . " -profile:v baseline -r 30 -level 3.0 -s 854x480 -start_number 0 -hls_time 4 -hls_list_size 0 -vcodec h264 -acodec aac -b:v 600k -b:a 96k -f hls " . $save_path_854_480 . " -profile:v baseline -r 30 -level 3.0 -s 1280x720 -start_number 0 -hls_time 4 -hls_list_size 0 -vcodec h264 -acodec aac -b:v 2000k -b:a 128k -f hls " . $save_path_1280_720);
-
-
-
 
             $content = "#EXTM3U
 #EXT-X-VERSION:3
@@ -108,7 +102,6 @@ try {
             $result = curl_exec($url);
             $code = curl_getinfo($url, CURLINFO_HTTP_CODE);
             curl_close($url);
-
 
             delete_files("/var/www/stream/uploads/" . $savefile_name);
 
