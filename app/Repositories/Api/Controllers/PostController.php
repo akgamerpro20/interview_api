@@ -43,8 +43,8 @@ class PostController extends BaseController
 
     public function ApproveVideo(Request $request)
     {
-        if ($request->id) {
-            $post = Post::where('id', $request->id)->first();
+        if ($request->post_id) {
+            $post = Post::where('id', $request->post_id)->first();
 
             if ($post) {
                 $post->encrypt_video = $request->url;
