@@ -98,7 +98,7 @@ try {
             // $code = curl_getinfo($url, CURLINFO_HTTP_CODE);
             // curl_close($url);
 
-            delete_files("/var/www/stream/uploads/" . $savefile_name);
+            // delete_files("/var/www/stream/uploads/" . $savefile_name);
 
         } else {
             sleep(10);
