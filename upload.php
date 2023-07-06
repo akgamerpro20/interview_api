@@ -1,5 +1,23 @@
 <?php
 
+function delete_files($target)
+{
+    if (is_dir($target)) {
+        $files = glob($target . '*', GLOB_MARK); //GLOB_MARK adds a slash to directories returned
+
+        foreach ($files as $file) {
+            delete_files($file);
+        }
+
+        if (file_exists($target)) {
+
+            rmdir($target);
+        }
+    } elseif (is_file($target)) {
+        unlink($target);
+    }
+}
+
 $servername = "db-mysql-sgp1-28255-do-user-14089511-0.b.db.ondigitalocean.com";
 $dbusername = "doadmin";
 $dbpassword = 'AVNS_rLM2YTJyAioumr-mBT3';
@@ -68,11 +86,7 @@ try {
             fwrite($fp, $content);
             fclose($fp);
 
-
-            //exec("ffmpeg -i ".$localpath." -s hd480 -c:v libx264 -crf 23 -c:a aac -strict -2 /mnt/volume_sgp1_01/mid_videos/".$savefile_name.".mp4");
-
             exec('ncftpput -R -v -u "postvod" -p "3de83dbf-ef8f-4a90-a3862c083a6b-309d-4918" "sg.storage.bunnycdn.com" uploads /var/www/stream/uploads/' . $savefile_name);
-
 
             $conn = new PDO("mysql:host=$servername;dbname=defaultdb;port=25060", $dbusername, $dbpassword);
             $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -96,7 +110,7 @@ try {
             curl_close($url);
 
 
-            // delete_files("/var/www/stream/uploads/" . $savefile_name);
+            delete_files("/var/www/stream/uploads/" . $savefile_name);
 
         } else {
             sleep(10);
